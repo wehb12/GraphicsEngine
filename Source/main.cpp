@@ -159,7 +159,7 @@ private:
 	std::unique_ptr<GWindow> Window;
 };
 
-int main()
+int WinMain()
 {
 	GRenderer Renderer;
 	Renderer.Init();
