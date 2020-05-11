@@ -2,12 +2,13 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.6)
 PROJECT(WillEngine VERSION 0.0)
 
 # Game source files
-SET(ENGINE_SOURCES
-	Source/main.cpp
+FILE(GLOB_RECURSE ENGINE_SOURCES
+    "Source/*.cpp"
 )
 
-file(GLOB ENGINE_HEADERS
-    # "Source/ThirParty/Include/*.h"
+# Game header files
+FILE(GLOB_RECURSE ENGINE_HEADERS
+    "Source/*.h"
 )
 
 # Source grouping for Visual Studio and Xcode
@@ -18,30 +19,34 @@ ELSE()
     SOURCE_GROUP(TREE ${CMAKE_CURRENT_SOURCE_DIR}/Source FILES ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 ENDIF()
 
-link_directories("${CMAKE_SOURCE_DIR}/Source/Graphics/ThirdParty/glfw-3.3.2/build/src/Debug")
+LINK_DIRECTORIES("${CMAKE_SOURCE_DIR}/Source/Graphics/ThirdParty/glfw-3.3.2/build/src/Debug")
 
 # Create an executable target called 'game'
 ADD_EXECUTABLE(WillEngine WIN32 ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 
+TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC
+    "Source/"
+    "Source/Engine/"
+)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
-find_package(OpenGL REQUIRED)
+FIND_PACKAGE(OpenGL REQUIRED)
 
-# find_package(GLM REQUIRED)
-# message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
+# FIND_PACKAGE(GLM REQUIRED)
+# MESSAGE(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
 
-find_package(GLFW3 REQUIRED)
-message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
+FIND_PACKAGE(GLFW3 REQUIRED)
+MESSAGE(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
 
 # GLAD
-add_library(GLAD "Source/Graphics/ThirdParty/glad/src/glad.c")
+ADD_LIBRARY(GLAD "Source/Graphics/ThirdParty/glad/src/glad.c")
 
-set(LIBS glfw3 opengl32 GLAD)
+SET(LIBS glfw3 opengl32 GLAD)
 
-include_directories(
+INCLUDE_DIRECTORIES(
     "${CMAKE_SOURCE_DIR}/Source/Graphics/ThirdParty/glad/include"
     "${CMAKE_SOURCE_DIR}/Source/Graphics/ThirdParty/glfw-3.3.2/include"
 )
 
-target_link_libraries(${PROJECT_NAME} ${LIBS})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${LIBS})
