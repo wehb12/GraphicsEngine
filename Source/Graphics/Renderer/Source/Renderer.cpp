@@ -1,10 +1,12 @@
 #include "Graphics/Renderer/Renderer.h"
 #include "Graphics/Window/Window.h"
 #include "Common/DebugMacros.h"
+#include "Common/StringOperations.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <fstream>
 #include <iostream>
 
 class GraphicsShader
@@ -52,6 +54,32 @@ void GRenderer::Init()
     MakeWindow();
 
     PostWindowInit();
+
+    LoadShaders();
+    CompileShaders();
+
+    float Vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        -0.5f, 0.5f, 0.0f,
+        0.5f, 0.5f, 0.0f
+    };
+
+    unsigned int Indices[] = {
+        0, 2, 1,
+        2, 3, 1
+    };
+
+    GenerateVertexArray();
+    BindVertexArray(VertexArrayObject);
+
+    GenerateVertexBuffer();
+    BindVertexBuffer(Vertices, sizeof(Vertices), VertexBufferObject);
+
+    GenerateElementBuffer();
+    BindElementBuffer(Indices, sizeof(Indices), IndexBufferObject);
+
+    SetVertexAttributePointer();
 }
 
 void GRenderer::Run()
@@ -95,57 +123,30 @@ int GRenderer::PostWindowInit()
         return -1;
     }
 
-    CompileShaders();
-
-    float Vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5f, 0.5f, 0.0f,
-        0.5f, 0.5f, 0.0f
-    };
-
-    unsigned int Indices[] = {
-        0, 2, 1,
-        2, 3, 1
-    };
-
-    GenerateVertexArray();
-    BindVertexArray(VertexArrayObject);
-
-    GenerateVertexBuffer();
-    BindVertexBuffer(Vertices, sizeof(Vertices), VertexBufferObject);
-
-    GenerateElementBuffer();
-    BindElementBuffer(Indices, sizeof(Indices), IndexBufferObject);
-
-    SetVertexAttributePointer();
-
     return 0;
+}
+
+void GRenderer::LoadShaders()
+{
+    VertexShaderSource = LoadShader(SHADER_PATH("HelloTriangle/VertexShader.glsl"));
+    FragmentShaderSource = LoadShader(SHADER_PATH("HelloTriangle/FragmentShader.glsl"));
+}
+
+std::string GRenderer::LoadShader(const char* ShaderPath)
+{
+    // TODO: Move to Resource Handler
+    std::ifstream ShaderFile(ShaderPath);
+    return std::string((std::istreambuf_iterator<char>(ShaderFile)), std::istreambuf_iterator<char>());
 }
 
 void GRenderer::CompileShaders()
 {
-    const char* VertexShaderSource = "#version 330 core\n"
-        "layout(location = 0) in vec3 Pos;\n"
-        "void main()\n"
-        "{\n"
-        "    gl_Position = vec4(Pos.x, Pos.y, Pos.z, 1.0);\n"
-        "}\0";
-
-
-    const char* FragmentShaderSource = "#version 330 core\n"
-        "out vec4 FragmentColour;\n"
-        "void main()\n"
-        "{\n"
-            "FragmentColour = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n"
-        "}\0";
-
     VertexShaderPtr = std::unique_ptr<GraphicsShader>(new GraphicsShader(glCreateShader(GL_VERTEX_SHADER)));
     FragmentShaderPtr = std::unique_ptr<GraphicsShader>(new GraphicsShader(glCreateShader(GL_FRAGMENT_SHADER)));
 
     ASSERT(
-        CompileShader(VertexShaderSource, *VertexShaderPtr) &&
-        CompileShader(FragmentShaderSource, *FragmentShaderPtr)
+        CompileShader(VertexShaderSource.c_str(), *VertexShaderPtr) &&
+        CompileShader(FragmentShaderSource.c_str(), *FragmentShaderPtr)
     );
 
     ShaderProgramPtr = std::unique_ptr<GraphicsShader>(new GraphicsShader(glCreateProgram()));

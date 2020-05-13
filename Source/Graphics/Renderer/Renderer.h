@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 
 class GWindow;
 class GraphicsShader;
@@ -26,10 +27,16 @@ private:
 
 	int PostWindowInit();
 
+	// Shaders
+	void LoadShaders();
+
+	std::string LoadShader(const char* ShaderPath);
+
 	void CompileShaders();
 
 	bool CompileShader(const char* ShaderSource, GraphicsShader& Shader);
 
+	// Vertex buffer operations
 	void GenerateVertexBuffer();
 
 	void GenerateElementBuffer();
@@ -57,6 +64,9 @@ private:
 	std::unique_ptr<GraphicsShader> VertexShaderPtr;
 	std::unique_ptr<GraphicsShader> FragmentShaderPtr;
 	std::unique_ptr<GraphicsShader> ShaderProgramPtr;
+
+	std::string VertexShaderSource;
+	std::string FragmentShaderSource;
 
 	unsigned int VertexArrayObject = 0;
 	unsigned int VertexBufferObject = 0;
