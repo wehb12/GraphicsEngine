@@ -51,7 +51,7 @@ private:
 	void Terminate();
 
 private:
-	std::unique_ptr<GWindow> WindowPtr;
+	std::shared_ptr<GWindow> WindowPtr;
 
 	// Hello Triangle
 	std::unique_ptr<GraphicsShader> VertexShaderPtr;

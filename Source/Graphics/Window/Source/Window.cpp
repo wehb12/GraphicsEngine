@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+std::shared_ptr<GWindow> GWindow::WindowSingleton;
+
 GWindow::GWindow(const std::string& InName, const int InWindowWidth /*= 800*/, const int InWindowHeight /*= 600*/)
     : WindowName(InName)
     , WindowWidth(InWindowWidth)

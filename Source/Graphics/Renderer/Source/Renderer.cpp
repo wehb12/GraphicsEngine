@@ -56,14 +56,11 @@ void GRenderer::Init()
 
 void GRenderer::Run()
 {
-    while (!WindowPtr->ShouldClose())
-    {
-        WindowPtr->ProcessInput();
+    WindowPtr->ProcessInput();
 
-        RenderScene();
+    RenderScene();
 
-        WindowPtr->SwapBuffers();
-    }
+    WindowPtr->SwapBuffers();
 }
 
 void GRenderer::InitGraphics()
@@ -84,7 +81,7 @@ void GRenderer::InitWindow()
 
 void GRenderer::MakeWindow()
 {
-    WindowPtr = std::unique_ptr<GWindow>(new GWindow("Hello Triangle!"));
+    WindowPtr = GWindow::Get();
 }
 
 int GRenderer::PostWindowInit()

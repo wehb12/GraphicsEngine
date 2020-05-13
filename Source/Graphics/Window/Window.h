@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
 struct GLFWwindow;
@@ -8,9 +9,12 @@ typedef GLFWwindow GGraphicsWindow;
 class GWindow
 {
 public:
-	GWindow(const std::string& InName, const int InWindowWidth = 800, const int InWindowHeight = 600);
-
 	~GWindow();
+
+	inline static std::shared_ptr<GWindow> Get()
+	{
+		return WindowSingleton ? WindowSingleton : (WindowSingleton = std::shared_ptr<GWindow>(new GWindow("Hello Triangle!")));
+	}
 
 	void SetAsContext();
 
@@ -25,6 +29,10 @@ public:
 	void ProcessInput();
 
 private:
+	GWindow(const std::string& InName, const int InWindowWidth = 800, const int InWindowHeight = 600);
+
+	static std::shared_ptr<GWindow> WindowSingleton;
+
 	static void ViewPortSizeCallback(GGraphicsWindow* Window, int NewWidth, int NewHeight);
     
 protected:
