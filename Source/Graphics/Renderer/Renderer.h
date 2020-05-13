@@ -30,6 +30,16 @@ private:
 
 	bool CompileShader(const char* ShaderSource, GraphicsShader& Shader);
 
+	void GenerateVertexBuffer();
+
+	void GenerateVertexArray();
+
+	void BindVertexArray(unsigned int& VAO);
+
+	void BindVertexBuffer(float Vertices[], const unsigned int ArraySize, unsigned int& VBO);
+
+	void SetVertexAttributePointer();
+
 	bool LinkShader(GraphicsShader& ShaderProgram, std::vector<GraphicsShader> ShaderArray);
 
 	void RenderScene();
@@ -44,6 +54,6 @@ private:
 	std::unique_ptr<GraphicsShader> FragmentShaderPtr;
 	std::unique_ptr<GraphicsShader> ShaderProgramPtr;
 
-	unsigned int VAO = 0;
-	unsigned int VBO = 0;
+	unsigned int VertexArrayObject = 0;
+	unsigned int VertexBufferObject = 0;
 };

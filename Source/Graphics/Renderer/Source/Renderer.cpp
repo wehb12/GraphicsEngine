@@ -106,21 +106,13 @@ int GRenderer::PostWindowInit()
         0.0f, 0.5f, 0.0f
     };
 
-    unsigned int VBO = 0;
-    glGenBuffers(1, &VBO);
+    GenerateVertexArray();
+    BindVertexArray(VertexArrayObject);
 
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
+    GenerateVertexBuffer();
+    BindVertexBuffer(Vertices, sizeof(Vertices), VertexBufferObject);
 
-    glBindVertexArray(VAO);
-
-    // Bind and send vertex data
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-
-    // Set vertex attribute pointer
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    SetVertexAttributePointer();
 
     return 0;
 }
@@ -176,6 +168,33 @@ bool GRenderer::CompileShader(const char* ShaderSource, GraphicsShader& Shader)
     }
 
     return Success == 0;
+}
+
+void GRenderer::GenerateVertexBuffer()
+{
+    glGenBuffers(1, &VertexBufferObject);
+}
+
+void GRenderer::GenerateVertexArray()
+{
+    glGenVertexArrays(1, &VertexArrayObject);
+}
+
+void GRenderer::BindVertexArray(unsigned int& VAO)
+{
+    glBindVertexArray(VAO);
+}
+
+void GRenderer::BindVertexBuffer(float Vertices[], const unsigned int ArraySize, unsigned int& VBO)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, ArraySize, Vertices, GL_STATIC_DRAW);
+}
+
+void GRenderer::SetVertexAttributePointer()
+{
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
 }
 
 bool GRenderer::LinkShader(GraphicsShader& ShaderProgram, std::vector<GraphicsShader> ShaderArray)
