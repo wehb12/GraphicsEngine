@@ -32,11 +32,15 @@ private:
 
 	void GenerateVertexBuffer();
 
+	void GenerateElementBuffer();
+
 	void GenerateVertexArray();
 
 	void BindVertexArray(unsigned int& VAO);
 
-	void BindVertexBuffer(float Vertices[], const unsigned int ArraySize, unsigned int& VBO);
+	void BindVertexBuffer(void* Array, const unsigned int ArraySize, unsigned int& BufferObject);
+
+	void BindElementBuffer(void* Array, const unsigned int ArraySize, unsigned int& BufferObject);
 
 	void SetVertexAttributePointer();
 
@@ -56,4 +60,5 @@ private:
 
 	unsigned int VertexArrayObject = 0;
 	unsigned int VertexBufferObject = 0;
+	unsigned int IndexBufferObject = 0;
 };

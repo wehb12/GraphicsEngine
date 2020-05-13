@@ -103,7 +103,13 @@ int GRenderer::PostWindowInit()
     float Vertices[] = {
         -0.5f, -0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f
+        -0.5f, 0.5f, 0.0f,
+        0.5f, 0.5f, 0.0f
+    };
+
+    unsigned int Indices[] = {
+        0, 2, 1,
+        2, 3, 1
     };
 
     GenerateVertexArray();
@@ -111,6 +117,9 @@ int GRenderer::PostWindowInit()
 
     GenerateVertexBuffer();
     BindVertexBuffer(Vertices, sizeof(Vertices), VertexBufferObject);
+
+    GenerateElementBuffer();
+    BindElementBuffer(Indices, sizeof(Indices), IndexBufferObject);
 
     SetVertexAttributePointer();
 
@@ -175,6 +184,11 @@ void GRenderer::GenerateVertexBuffer()
     glGenBuffers(1, &VertexBufferObject);
 }
 
+void GRenderer::GenerateElementBuffer()
+{
+    glGenBuffers(1, &IndexBufferObject);
+}
+
 void GRenderer::GenerateVertexArray()
 {
     glGenVertexArrays(1, &VertexArrayObject);
@@ -185,10 +199,16 @@ void GRenderer::BindVertexArray(unsigned int& VAO)
     glBindVertexArray(VAO);
 }
 
-void GRenderer::BindVertexBuffer(float Vertices[], const unsigned int ArraySize, unsigned int& VBO)
+void GRenderer::BindVertexBuffer(void* Array, const unsigned int ArraySize, unsigned int& BufferObject)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, ArraySize, Vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, BufferObject);
+    glBufferData(GL_ARRAY_BUFFER, ArraySize, Array, GL_STATIC_DRAW);
+}
+
+void GRenderer::BindElementBuffer(void* Array, const unsigned int ArraySize, unsigned int& BufferObject)
+{
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BufferObject);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, ArraySize, Array, GL_STATIC_DRAW);
 }
 
 void GRenderer::SetVertexAttributePointer()
@@ -223,7 +243,7 @@ void GRenderer::RenderScene()
 {
     WindowPtr->ClearToBackground();
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 void GRenderer::Terminate()
