@@ -7,6 +7,17 @@
 class GWindow;
 class GraphicsShader;
 
+// TODO: Move to a mesh or vertex class
+namespace EVertexBuffer
+{
+	enum Type : unsigned int
+	{
+		VERTEX_BUFFER = 0,
+		COLOUR_BUFFER,
+		MAX
+	};
+}
+
 class GRenderer
 {
 public:
@@ -37,7 +48,7 @@ private:
 	bool CompileShader(const char* ShaderSource, GraphicsShader& Shader);
 
 	// Vertex buffer operations
-	void GenerateVertexBuffer();
+	void GenerateVertexBuffers();
 
 	void GenerateElementBuffer();
 
@@ -49,7 +60,7 @@ private:
 
 	void BindElementBuffer(void* Array, const unsigned int ArraySize, unsigned int& BufferObject);
 
-	void SetVertexAttributePointer();
+	void SetVertexAttributePointer(const EVertexBuffer::Type& VertexBufferType, const unsigned int& VectorSize);
 
 	bool LinkShader(GraphicsShader& ShaderProgram, std::vector<GraphicsShader> ShaderArray);
 
@@ -69,6 +80,6 @@ private:
 	std::string FragmentShaderSource;
 
 	unsigned int VertexArrayObject = 0;
-	unsigned int VertexBufferObject = 0;
+	unsigned int VertexBufferObjects[EVertexBuffer::MAX] = { 0 };
 	unsigned int IndexBufferObject = 0;
 };

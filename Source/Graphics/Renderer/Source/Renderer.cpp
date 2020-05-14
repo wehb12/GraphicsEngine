@@ -59,27 +59,34 @@ void GRenderer::Init()
     CompileShaders();
 
     float Vertices[] = {
+        0.0f, 0.5f, 0.0f,
         -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5f, 0.5f, 0.0f,
-        0.5f, 0.5f, 0.0f
+        0.5f, -0.5f, 0.0f
+    };
+
+    float Colours[] = {
+        1.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f, 1.0f
     };
 
     unsigned int Indices[] = {
-        0, 2, 1,
-        2, 3, 1
+        0, 1, 2
     };
 
     GenerateVertexArray();
     BindVertexArray(VertexArrayObject);
 
-    GenerateVertexBuffer();
-    BindVertexBuffer(Vertices, sizeof(Vertices), VertexBufferObject);
+    GenerateVertexBuffers();
+
+    BindVertexBuffer(Vertices, sizeof(Vertices), VertexBufferObjects[EVertexBuffer::VERTEX_BUFFER]);
+    SetVertexAttributePointer(EVertexBuffer::VERTEX_BUFFER, 3);
+
+    BindVertexBuffer(Colours, sizeof(Colours), VertexBufferObjects[EVertexBuffer::COLOUR_BUFFER]);
+    SetVertexAttributePointer(EVertexBuffer::COLOUR_BUFFER, 4);
 
     GenerateElementBuffer();
     BindElementBuffer(Indices, sizeof(Indices), IndexBufferObject);
-
-    SetVertexAttributePointer();
 }
 
 void GRenderer::Run()
@@ -177,9 +184,12 @@ bool GRenderer::CompileShader(const char* ShaderSource, GraphicsShader& Shader)
     return Success == 0;
 }
 
-void GRenderer::GenerateVertexBuffer()
+void GRenderer::GenerateVertexBuffers()
 {
-    glGenBuffers(1, &VertexBufferObject);
+    for (unsigned int& VertexBufferObject : VertexBufferObjects)
+    {
+        glGenBuffers(1, &VertexBufferObject);
+    }
 }
 
 void GRenderer::GenerateElementBuffer()
@@ -209,10 +219,10 @@ void GRenderer::BindElementBuffer(void* Array, const unsigned int ArraySize, uns
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, ArraySize, Array, GL_STATIC_DRAW);
 }
 
-void GRenderer::SetVertexAttributePointer()
+void GRenderer::SetVertexAttributePointer(const EVertexBuffer::Type& VertexBufferType, const const unsigned int& VectorSize)
 {
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(VertexBufferType, VectorSize, GL_FLOAT, GL_FALSE, VectorSize * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(VertexBufferType);
 }
 
 bool GRenderer::LinkShader(GraphicsShader& ShaderProgram, std::vector<GraphicsShader> ShaderArray)
