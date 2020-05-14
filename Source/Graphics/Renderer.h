@@ -4,8 +4,8 @@
 #include <memory>
 #include <string>
 
+class GShader;
 class GWindow;
-class GraphicsShader;
 
 // TODO: Move to a mesh or vertex class
 namespace EVertexBuffer
@@ -38,15 +38,6 @@ private:
 
 	int PostWindowInit();
 
-	// Shaders
-	void LoadShaders();
-
-	std::string LoadShader(const char* ShaderPath);
-
-	void CompileShaders();
-
-	bool CompileShader(const char* ShaderSource, GraphicsShader& Shader);
-
 	// Vertex buffer operations
 	void GenerateVertexBuffers();
 
@@ -62,8 +53,6 @@ private:
 
 	void SetVertexAttributePointer(const EVertexBuffer::Type& VertexBufferType, const unsigned int& VectorSize);
 
-	bool LinkShader(GraphicsShader& ShaderProgram, std::vector<GraphicsShader> ShaderArray);
-
 	void RenderScene();
 
 	void Terminate();
@@ -71,13 +60,7 @@ private:
 private:
 	std::shared_ptr<GWindow> WindowPtr;
 
-	// Hello Triangle
-	std::unique_ptr<GraphicsShader> VertexShaderPtr;
-	std::unique_ptr<GraphicsShader> FragmentShaderPtr;
-	std::unique_ptr<GraphicsShader> ShaderProgramPtr;
-
-	std::string VertexShaderSource;
-	std::string FragmentShaderSource;
+	std::unique_ptr<GShader> HelloTriangleShader;
 
 	unsigned int VertexArrayObject = 0;
 	unsigned int VertexBufferObjects[EVertexBuffer::MAX] = { 0 };
