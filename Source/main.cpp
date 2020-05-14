@@ -1,5 +1,5 @@
-#include "Graphics/Renderer/Renderer.h"
-#include "Graphics/Window/Window.h"
+#include "Graphics/Renderer.h"
+#include "Graphics/Window.h"
 
 bool ShouldClose();
 

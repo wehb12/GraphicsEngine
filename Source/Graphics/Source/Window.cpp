@@ -1,4 +1,4 @@
-#include "Graphics/Window/Window.h"
+#include "Graphics/Window.h"
 #include "Common/DebugMacros.h"
 
 #include <glad/glad.h>
