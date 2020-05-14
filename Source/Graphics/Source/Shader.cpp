@@ -90,6 +90,8 @@ std::vector<std::string> GShader::LoadShaders(const std::vector<std::string>& Sh
 	for (const std::string& ShaderPath : ShaderPaths)
 	{
 		std::ifstream ShaderFile(ShaderPath);
+
+        ASSERT_FAIL(ShaderFile.is_open(), std::cout << "Shader file " << ShaderPath << " does not exist" << std::endl);
         ShaderSource.push_back(std::string((std::istreambuf_iterator<char>(ShaderFile)), std::istreambuf_iterator<char>()));
 	}
 
@@ -125,7 +127,7 @@ bool GShader::CompileShader(const char* ShaderSource, GraphicsShader& Shader)
         std::cout << "Error: Shader compilation failed - " << InfoLog << std::endl;
     }
 
-    return Success == 0;
+    return Success != 0;
 }
 
 bool GShader::LinkShader()
