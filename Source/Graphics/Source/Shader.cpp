@@ -56,6 +56,7 @@ void GShader::UseProgram()
 
 void GShader::DetermineShaderStageTypes(const std::vector<std::string>& ShaderList)
 {
+    // TODO: Make these checks more robust, maybe pass a flag into constructor to verify makeup of shader
     if (ShaderList.size() == 2)
     {
         ShaderStageTypes.push_back(GL_VERTEX_SHADER);

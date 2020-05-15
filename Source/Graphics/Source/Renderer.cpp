@@ -1,4 +1,5 @@
 #include "Graphics/Renderer.h"
+#include "Graphics/Mesh.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Window.h"
 #include "Common/DebugMacros.h"
@@ -36,35 +37,22 @@ void GRenderer::Init()
 
     HelloTriangleShader->UseProgram();
 
-    float Vertices[] = {
-        0.0f, 0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f
-    };
+    TriangleMesh = std::unique_ptr<GMesh>(new GMesh());
+    TriangleMesh->AddVertex(
+        { 0.0f, 0.5f, 0.0f }, 
+        { 1.0f, 0.0f, 0.0f, 1.0f }
+    );
+    TriangleMesh->AddVertex(
+        { -0.5f, -0.5f, 0.0f },
+        { 0.0f, 1.0f, 0.0f, 1.0f }
+    );
+    TriangleMesh->AddVertex(
+        { 0.5f, -0.5f, 0.0f },
+        { 0.0f, 0.0f, 1.0f, 1.0f }
+    );
+    TriangleMesh->AddIndices(0, 1, 2);
 
-    float Colours[] = {
-        1.0f, 0.0f, 0.0f, 1.0f,
-        0.0f, 1.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f, 1.0f
-    };
-
-    unsigned int Indices[] = {
-        0, 1, 2
-    };
-
-    GenerateVertexArray();
-    BindVertexArray(VertexArrayObject);
-
-    GenerateVertexBuffers();
-
-    BindVertexBuffer(Vertices, sizeof(Vertices), VertexBufferObjects[EVertexBuffer::VERTEX_BUFFER]);
-    SetVertexAttributePointer(EVertexBuffer::VERTEX_BUFFER, 3);
-
-    BindVertexBuffer(Colours, sizeof(Colours), VertexBufferObjects[EVertexBuffer::COLOUR_BUFFER]);
-    SetVertexAttributePointer(EVertexBuffer::COLOUR_BUFFER, 4);
-
-    GenerateElementBuffer();
-    BindElementBuffer(Indices, sizeof(Indices), IndexBufferObject);
+    TriangleMesh->BindBuffers();
 }
 
 void GRenderer::Run()
@@ -109,47 +97,6 @@ int GRenderer::PostWindowInit()
     }
 
     return 0;
-}
-
-void GRenderer::GenerateVertexBuffers()
-{
-    for (unsigned int& VertexBufferObject : VertexBufferObjects)
-    {
-        glGenBuffers(1, &VertexBufferObject);
-    }
-}
-
-void GRenderer::GenerateElementBuffer()
-{
-    glGenBuffers(1, &IndexBufferObject);
-}
-
-void GRenderer::GenerateVertexArray()
-{
-    glGenVertexArrays(1, &VertexArrayObject);
-}
-
-void GRenderer::BindVertexArray(unsigned int& VAO)
-{
-    glBindVertexArray(VAO);
-}
-
-void GRenderer::BindVertexBuffer(void* Array, const unsigned int ArraySize, unsigned int& BufferObject)
-{
-    glBindBuffer(GL_ARRAY_BUFFER, BufferObject);
-    glBufferData(GL_ARRAY_BUFFER, ArraySize, Array, GL_STATIC_DRAW);
-}
-
-void GRenderer::BindElementBuffer(void* Array, const unsigned int ArraySize, unsigned int& BufferObject)
-{
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BufferObject);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, ArraySize, Array, GL_STATIC_DRAW);
-}
-
-void GRenderer::SetVertexAttributePointer(const EVertexBuffer::Type& VertexBufferType, const const unsigned int& VectorSize)
-{
-    glVertexAttribPointer(VertexBufferType, VectorSize, GL_FLOAT, GL_FALSE, VectorSize * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(VertexBufferType);
 }
 
 void GRenderer::RenderScene()
