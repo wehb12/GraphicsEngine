@@ -19,7 +19,7 @@ ELSE()
     SOURCE_GROUP(TREE ${CMAKE_CURRENT_SOURCE_DIR}/Source FILES ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 ENDIF()
 
-LINK_DIRECTORIES("${CMAKE_SOURCE_DIR}/Source/Graphics/ThirdParty/glfw-3.3.2/build/src/Debug")
+LINK_DIRECTORIES("${CMAKE_SOURCE_DIR}/Source/ThirdParty/Graphics/glfw-3.3.2/build/src/Debug")
 
 # Create an executable target called 'game'
 ADD_EXECUTABLE(WillEngine WIN32 ${ENGINE_SOURCES} ${ENGINE_HEADERS})
@@ -27,7 +27,7 @@ ADD_EXECUTABLE(WillEngine WIN32 ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC
     "Source/"
     "Source/Engine/"
-    "Source/Graphics/ThirdParty/"
+    "Source/ThirdParty/Graphics/"
 )
 
 TARGET_COMPILE_DEFINITIONS(WillEngine PRIVATE SHADER_DIR="${CMAKE_SOURCE_DIR}/Source/Graphics/Shaders/")
@@ -44,13 +44,13 @@ FIND_PACKAGE(GLFW3 REQUIRED)
 MESSAGE(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
 
 # GLAD
-ADD_LIBRARY(GLAD "Source/Graphics/ThirdParty/glad/src/glad.c")
+ADD_LIBRARY(GLAD "Source/ThirdParty/Graphics/glad/src/glad.c")
 
 SET(LIBS glfw3 opengl32 GLAD)
 
 INCLUDE_DIRECTORIES(
-    "${CMAKE_SOURCE_DIR}/Source/Graphics/ThirdParty/glad/include"
-    "${CMAKE_SOURCE_DIR}/Source/Graphics/ThirdParty/glfw-3.3.2/include"
+    "${CMAKE_SOURCE_DIR}/Source/ThirdParty/Graphics/glad/include"
+    "${CMAKE_SOURCE_DIR}/Source/ThirdParty/Graphics/glfw-3.3.2/include"
 )
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${LIBS})
