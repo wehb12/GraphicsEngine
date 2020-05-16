@@ -1,4 +1,5 @@
 #include "Graphics/Texture.h"
+#include "Common/StringOperations.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -62,7 +63,15 @@ bool GTexture::LoadTexture(const std::string& TexturePath)
 	int Channels;
 	unsigned char* TextureData = stbi_load(TexturePath.c_str(), &Width, &Height, &Channels, 0);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, GL_RGB, GL_UNSIGNED_BYTE, TextureData);
+	std::string FileType = TexturePath.substr(TexturePath.rfind('.', std::string::npos));
+
+	unsigned short ColourType = GL_RGB;
+	if (CompareString(FileType, "png"))
+	{
+		ColourType = GL_RGBA;
+	}
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, ColourType, GL_UNSIGNED_BYTE, TextureData);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	stbi_image_free(TextureData);
