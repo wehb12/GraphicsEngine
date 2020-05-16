@@ -1,5 +1,6 @@
 #include "Graphics/Mesh.h"
 #include "Common/DebugMacros.h"
+#include "Graphics/Texture.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -79,6 +80,37 @@ void GMesh::AddVertex(const float Vertex[3], const float Colour[4])
 	Colours.push_back(ColourArray);
 }
 
+void GMesh::AddColour(const float Colour[4])
+{
+	ASSERT(bIsEditable);
+
+	const std::array<const float, 4> ColourArray = {
+		Colour[0],
+		Colour[1],
+		Colour[2],
+		Colour[4]
+	};
+
+	Colours.push_back(ColourArray);
+}
+
+void GMesh::AddTexCoord(const float TexCoord[2])
+{
+	ASSERT(bIsEditable);
+
+	const std::array<const float, 2> TexCoordArray = {
+		TexCoord[0],
+		TexCoord[1]
+	};
+
+	TexCoords.push_back(TexCoordArray);
+}
+
+void GMesh::SetTexture(const std::string& TexturePath)
+{
+	Texture = std::shared_ptr<GTexture>(new GTexture(TexturePath));
+}
+
 void GMesh::GenerateVertexArray()
 {
 	VertexArrayObject = std::unique_ptr<GraphicsMesh>(new GraphicsMesh());
@@ -103,6 +135,13 @@ void GMesh::GenerateBuffers()
 		GraphicsMesh* ColourBuffer = new GraphicsMesh();
 		VertexBufferObjects[EVertexBuffer::COLOUR_BUFFER] = std::unique_ptr<GraphicsMesh>(ColourBuffer);
 		glGenBuffers(1, (GLuint*)ColourBuffer);
+	}
+
+	if (TexCoords.size() != 0)
+	{
+		GraphicsMesh* TexCoordBuffer = new GraphicsMesh();
+		VertexBufferObjects[EVertexBuffer::TEXCOORD_BUFFER] = std::unique_ptr<GraphicsMesh>(TexCoordBuffer);
+		glGenBuffers(1, (GLuint*)TexCoordBuffer);
 	}
 
 	if (Indices.size() != 0)
@@ -135,6 +174,12 @@ void GMesh::BindBuffers(const bool& bCanEdit)
 	{
 		BindBuffer(const_cast<float*>(&Colours[0][0]), Colours.size() * Colours[0].size() * sizeof(float), *VertexBufferObjects[EVertexBuffer::COLOUR_BUFFER], GL_ARRAY_BUFFER);
 		SetVertexAttributePointer(EVertexBuffer::COLOUR_BUFFER, Colours[0].size());
+	}
+
+	if (TexCoords.size() != 0)
+	{
+		BindBuffer(const_cast<float*>(&TexCoords[0][0]), TexCoords.size() * TexCoords[0].size() * sizeof(float), *VertexBufferObjects[EVertexBuffer::TEXCOORD_BUFFER], GL_ARRAY_BUFFER);
+		SetVertexAttributePointer(EVertexBuffer::TEXCOORD_BUFFER, TexCoords[0].size());
 	}
 
 	if (Indices.size() != 0)

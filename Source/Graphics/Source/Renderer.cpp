@@ -39,17 +39,25 @@ void GRenderer::Init()
 
     TriangleMesh = std::unique_ptr<GMesh>(new GMesh());
     TriangleMesh->AddVertex(
-        { 0.0f, 0.5f, 0.0f }, 
-        { 1.0f, 0.0f, 0.0f, 1.0f }
+        { 0.0f, 0.5f, 0.0f },
+        { 1.0f, 0.0f, 0.0f, 1.0f },
+        { 0.5f, 1.0f }
     );
+
     TriangleMesh->AddVertex(
         { -0.5f, -0.5f, 0.0f },
-        { 0.0f, 1.0f, 0.0f, 1.0f }
+        { 0.0f, 1.0f, 0.0f, 1.0f },
+        { 0.0f, 0.0f }
     );
+
     TriangleMesh->AddVertex(
         { 0.5f, -0.5f, 0.0f },
-        { 0.0f, 0.0f, 1.0f, 1.0f }
+        { 0.0f, 0.0f, 1.0f, 1.0f },
+        { 1.0f, 0.0f }
     );
+
+    TriangleMesh->SetTexture(TEXTURE_PATH("funky_squares.jpg"));
+
     TriangleMesh->AddIndices(0, 1, 2);
 
     TriangleMesh->BindBuffers();
