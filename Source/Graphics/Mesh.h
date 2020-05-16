@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 
-class GraphicsMesh;
 class GTexture;
+struct GraphicsMesh;
 
 class GMesh
 {

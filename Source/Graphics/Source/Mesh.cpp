@@ -7,9 +7,8 @@
 
 #include <array>
 
-class GraphicsMesh
+struct GraphicsMesh
 {
-public:
 	GraphicsMesh()
 	{
 	}

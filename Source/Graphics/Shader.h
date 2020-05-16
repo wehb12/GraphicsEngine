@@ -5,7 +5,7 @@
 #include <memory>
 #include <vector>
 
-class GraphicsShader;
+struct GraphicsShader;
 
 class GShader
 {

@@ -7,9 +7,8 @@
 #include <fstream>
 #include <iostream>
 
-class GraphicsShader
+struct GraphicsShader
 {
-public:
     GraphicsShader()
     {
     }
