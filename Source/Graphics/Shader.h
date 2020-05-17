@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/fwd.hpp>
+
 #include <initializer_list>
 #include <string>
 #include <memory>
@@ -15,6 +17,8 @@ public:
     ~GShader();
 
     void UseProgram();
+
+    void BufferModelMatrix(const std::shared_ptr<glm::mat4> ModelMatrix);
 
 private:
     void DetermineShaderStageTypes(const std::vector<std::string>& ShaderList);

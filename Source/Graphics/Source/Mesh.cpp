@@ -4,6 +4,8 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <array>
 
@@ -29,6 +31,9 @@ struct GraphicsMesh
 
 GMesh::GMesh(const std::string& MeshName)
 {
+	ModelMatrix = std::shared_ptr<glm::mat4>(new glm::mat4(1.0f));
+	*ModelMatrix = glm::scale(*ModelMatrix, glm::vec3(2.0f, 2.0f, 2.0f));
+
 	if (MeshName.size() != 0)
 	{
 		// Load mesh from file

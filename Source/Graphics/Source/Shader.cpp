@@ -3,6 +3,8 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -51,6 +53,12 @@ void GShader::UseProgram()
 {
     ASSERT(ShaderProgramPtr);
     glUseProgram(*ShaderProgramPtr);
+}
+
+void GShader::BufferModelMatrix(const std::shared_ptr<glm::mat4> ModelMatrix)
+{
+    unsigned int Loc = glGetUniformLocation(*ShaderProgramPtr, "ModelMatrix");
+    glUniformMatrix4fv(Loc, 1, GL_FALSE, glm::value_ptr(*ModelMatrix));
 }
 
 void GShader::DetermineShaderStageTypes(const std::vector<std::string>& ShaderList)

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/fwd.hpp>
+
 #include <algorithm>
 #include <initializer_list>
 #include <memory>
@@ -120,6 +122,11 @@ public:
 		BindBuffers(bIsEditable);
 	}
 
+	inline const std::shared_ptr<glm::mat4> GetModelMatrix()
+	{
+		return ModelMatrix;
+	}
+
 private:
 	void GenerateVertexArray();
 
@@ -146,4 +153,6 @@ private:
 	std::unique_ptr<GraphicsMesh> VertexBufferObjects[EVertexBuffer::MAX];
 
 	std::shared_ptr<GTexture> Texture;
+
+	std::shared_ptr<glm::mat4> ModelMatrix;
 };

@@ -61,6 +61,8 @@ void GRenderer::Init()
     TriangleMesh->AddIndices(0, 1, 2);
 
     TriangleMesh->BindBuffers();
+
+    HelloTriangleShader->BufferModelMatrix(TriangleMesh->GetModelMatrix());
 }
 
 void GRenderer::Run()
