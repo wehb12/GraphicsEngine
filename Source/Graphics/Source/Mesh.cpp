@@ -8,6 +8,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <array>
+#include <cmath>
+#include <ctime>
 
 struct GraphicsMesh
 {
@@ -32,7 +34,6 @@ struct GraphicsMesh
 GMesh::GMesh(const std::string& MeshName)
 {
 	ModelMatrix = std::shared_ptr<glm::mat4>(new glm::mat4(1.0f));
-	*ModelMatrix = glm::scale(*ModelMatrix, glm::vec3(2.0f, 2.0f, 2.0f));
 
 	if (MeshName.size() != 0)
 	{
@@ -48,6 +49,15 @@ GMesh::GMesh(const std::string& MeshName)
 
 GMesh::~GMesh()
 {
+}
+
+void GMesh::Tick()
+{
+	// TODO: move this to a timer class
+	const double StartTime = glfwGetTime();
+
+	const float Scale = std::sin(StartTime) + 1;
+	*ModelMatrix = glm::scale(glm::identity<glm::mat4>(), glm::vec3(Scale, Scale, Scale));
 }
 
 void GMesh::AddVertex(const float Vertex[3])

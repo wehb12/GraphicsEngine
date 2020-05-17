@@ -10,7 +10,7 @@ int WinMain()
 
 	while (!ShouldClose())
 	{
-		Renderer.Run();
+		Renderer.Tick();
 	}
 
 	return 0;

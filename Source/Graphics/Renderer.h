@@ -17,7 +17,7 @@ public:
 
 	void Init();
 
-	void Run();
+	void Tick();
 
 private:
 	void InitGraphics();
