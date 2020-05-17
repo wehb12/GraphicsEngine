@@ -8,10 +8,11 @@ out vec4 VertexColour;
 out vec2 VertexTexCoord;
 
 uniform mat4 ModelMatrix;
+uniform mat4 ProjectionViewMatrix;
 
 void main()
 {
-    gl_Position = ModelMatrix * vec4(Position, 1.0);
+    gl_Position = ProjectionViewMatrix * ModelMatrix * vec4(Position, 1.0);
     VertexColour = Colour;
     VertexTexCoord = TexCoord;
 }

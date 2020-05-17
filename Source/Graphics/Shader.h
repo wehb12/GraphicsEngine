@@ -20,6 +20,8 @@ public:
 
     void BufferModelMatrix(const std::shared_ptr<glm::mat4> ModelMatrix);
 
+    void BufferProjectionViewMatrix(const std::shared_ptr<glm::mat4> ProjectionViewMatrix);
+
 private:
     void DetermineShaderStageTypes(const std::vector<std::string>& ShaderList);
 

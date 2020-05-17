@@ -1,4 +1,5 @@
 #include "Graphics/Renderer.h"
+#include "Graphics/Camera.h"
 #include "Graphics/Mesh.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Window.h"
@@ -56,9 +57,25 @@ void GRenderer::Init()
         { 1.0f, 0.0f }
     );
 
+    TriangleMesh->AddVertex(
+        { 0.5f, 0.5f, 0.0f },
+        { 0.0f, 0.0f, 1.0f, 1.0f },
+        { 1.0f, 1.0f }
+    );
+
+    TriangleMesh->AddVertex(
+        { -0.5f, 0.5f, 0.0f },
+        { 0.0f, 0.0f, 1.0f, 1.0f },
+        { 0.0f, 1.0f }
+    );
+
     TriangleMesh->SetTexture(TEXTURE_PATH("funky_squares.jpg"));
 
-    TriangleMesh->AddIndices(0, 1, 2);
+    // Triangle
+    //TriangleMesh->AddIndices(0, 1, 2);
+
+    // Rectangle
+    TriangleMesh->AddIndices(1, 4, 2, 2, 4, 3);
 
     TriangleMesh->BindBuffers();
 }
@@ -69,6 +86,7 @@ void GRenderer::Tick()
 
     TriangleMesh->Tick();
     HelloTriangleShader->BufferModelMatrix(TriangleMesh->GetModelMatrix());
+    HelloTriangleShader->BufferProjectionViewMatrix(CameraPtr->GetProjectionViewMatrix());
 
     RenderScene();
 

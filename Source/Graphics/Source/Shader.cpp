@@ -57,8 +57,12 @@ void GShader::UseProgram()
 
 void GShader::BufferModelMatrix(const std::shared_ptr<glm::mat4> ModelMatrix)
 {
-    unsigned int Loc = glGetUniformLocation(*ShaderProgramPtr, "ModelMatrix");
-    glUniformMatrix4fv(Loc, 1, GL_FALSE, glm::value_ptr(*ModelMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(*ShaderProgramPtr, "ModelMatrix"), 1, GL_FALSE, glm::value_ptr(*ModelMatrix));
+}
+
+void GShader::BufferProjectionViewMatrix(const std::shared_ptr<glm::mat4> ProjectionViewMatrix)
+{
+    glUniformMatrix4fv(glGetUniformLocation(*ShaderProgramPtr, "ProjectionViewMatrix"), 1, GL_FALSE, glm::value_ptr(*ProjectionViewMatrix));
 }
 
 void GShader::DetermineShaderStageTypes(const std::vector<std::string>& ShaderList)

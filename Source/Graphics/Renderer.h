@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 
+class GCamera;
 class GMesh;
 class GShader;
 class GWindow;
@@ -18,6 +19,11 @@ public:
 	void Init();
 
 	void Tick();
+
+	inline void AddCamera(const std::shared_ptr<const GCamera> Camera)
+	{
+		CameraPtr = Camera;
+	}
 
 private:
 	void InitGraphics();
@@ -41,4 +47,6 @@ private:
 	std::unique_ptr<GShader> HelloTriangleShader;
 
 	std::unique_ptr<GMesh> TriangleMesh;
+
+	std::shared_ptr<const GCamera> CameraPtr;
 };
