@@ -34,8 +34,7 @@ private:
 
 	int PostWindowInit();
 
-	// Vertex buffer operations
-	void BindElementBuffer(void* Array, const unsigned int ArraySize, unsigned int& BufferObject);
+	void EnableDepthTest(bool bEnable = true);
 
 	void RenderScene();
 

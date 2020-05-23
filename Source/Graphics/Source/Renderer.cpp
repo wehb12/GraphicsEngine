@@ -29,6 +29,8 @@ void GRenderer::Init()
 
     PostWindowInit();
 
+    EnableDepthTest();
+
     // TODO: Move this call to Resource Handler
     HelloTriangleShader = std::unique_ptr<GShader>(new GShader(
         {
@@ -88,6 +90,7 @@ void GRenderer::Tick()
     HelloTriangleShader->BufferModelMatrix(TriangleMesh->GetModelMatrix());
     HelloTriangleShader->BufferProjectionViewMatrix(CameraPtr->GetProjectionViewMatrix());
 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     RenderScene();
 
     WindowPtr->SwapBuffers();
@@ -126,6 +129,18 @@ int GRenderer::PostWindowInit()
     }
 
     return 0;
+}
+
+void GRenderer::EnableDepthTest(bool bEnable)
+{
+    if (bEnable)
+    {
+        glEnable(GL_DEPTH_TEST);
+    }
+    else
+    {
+        glDisable(GL_DEPTH_TEST);
+    }
 }
 
 void GRenderer::RenderScene()
