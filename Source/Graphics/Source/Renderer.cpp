@@ -84,8 +84,6 @@ void GRenderer::Init()
 
 void GRenderer::Tick()
 {
-    WindowPtr->ProcessInput();
-
     TriangleMesh->Tick();
     HelloTriangleShader->BufferModelMatrix(TriangleMesh->GetModelMatrix());
     HelloTriangleShader->BufferProjectionViewMatrix(CameraPtr->GetProjectionViewMatrix());

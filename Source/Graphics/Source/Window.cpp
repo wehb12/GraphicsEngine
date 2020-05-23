@@ -1,5 +1,6 @@
 #include "Graphics/Window.h"
 #include "Common/DebugMacros.h"
+#include "Input/InputManager.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -19,6 +20,11 @@ GWindow::GWindow(const std::string& InName, const int InWindowWidth /*= 800*/, c
 GWindow::~GWindow()
 {
     glfwDestroyWindow(GraphicsWindow);
+}
+
+void GWindow::Init()
+{
+    IInputManager::Get()->BindDelegate(EInputKey::ESCAPE, &GWindow::CloseWindow, this);
 }
 
 void GWindow::SetAsContext()
@@ -48,12 +54,9 @@ void GWindow::SwapBuffers()
     glfwPollEvents();
 }
 
-void GWindow::ProcessInput()
+void GWindow::CloseWindow()
 {
-    if (glfwGetKey(GraphicsWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    {
-        glfwSetWindowShouldClose(GraphicsWindow, true);
-    }
+    glfwSetWindowShouldClose(GraphicsWindow, true);
 }
 
 void GWindow::ViewPortSizeCallback(GGraphicsWindow* Window, int NewWidth, int NewHeight)

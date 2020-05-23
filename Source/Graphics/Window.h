@@ -9,12 +9,16 @@ typedef GLFWwindow GGraphicsWindow;
 class GWindow
 {
 public:
+	friend class IInputManager;
+
 	~GWindow();
 
 	inline static std::shared_ptr<GWindow> Get()
 	{
 		return WindowSingleton ? WindowSingleton : (WindowSingleton = std::shared_ptr<GWindow>(new GWindow("Hello Triangle!")));
 	}
+
+	void Init();
 
 	void SetAsContext();
 
@@ -26,7 +30,7 @@ public:
 
 	void SwapBuffers();
 
-	void ProcessInput();
+	void CloseWindow();
 
 private:
 	GWindow(const std::string& InName, const int InWindowWidth = 800, const int InWindowHeight = 600);
@@ -34,6 +38,11 @@ private:
 	static std::shared_ptr<GWindow> WindowSingleton;
 
 	static void ViewPortSizeCallback(GGraphicsWindow* Window, int NewWidth, int NewHeight);
+
+	inline void* GetRawWindowPtr()
+	{
+		return (void*)GraphicsWindow;
+	}
     
 protected:
 	std::string WindowName;
