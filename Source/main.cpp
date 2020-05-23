@@ -1,7 +1,8 @@
+#include "Core/Timing/GlobalTimer.h"
 #include "Graphics/Camera.h"
-#include "Input/InputManager.h"
 #include "Graphics/Renderer.h"
 #include "Graphics/Window.h"
+#include "Input/InputManager.h"
 
 #include <memory>
 
@@ -9,6 +10,9 @@ bool ShouldClose();
 
 int WinMain()
 {
+	// Create global timer singleton and lock in start time
+	CGlobalTimer::Get();
+
 	GRenderer Renderer;
 	Renderer.Init();
 
@@ -20,6 +24,7 @@ int WinMain()
 
 	while (!ShouldClose())
 	{
+		CGlobalTimer::Get()->Tick();
 		Camera->Tick();
 		Renderer.Tick();
 	}
