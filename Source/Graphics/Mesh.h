@@ -138,7 +138,7 @@ private:
 
 	void BindBuffer(void* Array, const unsigned int ArraySize, GraphicsMesh& BufferObject, unsigned int BufferType);
 
-	void SetVertexAttributePointer(const GMesh::EVertexBuffer& VertexBufferType, const const unsigned int& VectorSize);
+	void SetVertexAttributePointer(const GMesh::EVertexBuffer& VertexBufferType, const unsigned int& VectorSize);
 		
 	void BindBuffers(const bool& bCanEdit);
 
