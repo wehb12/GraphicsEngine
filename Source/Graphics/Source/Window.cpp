@@ -24,7 +24,7 @@ GWindow::~GWindow()
 
 void GWindow::Init()
 {
-    IInputManager::Get()->BindDelegate(EInputKey::ESCAPE, &GWindow::CloseWindow, this);
+    IInputManager::Get()->BindDelegate(EInputKey::ESCAPE, this, &GWindow::CloseWindow);
 }
 
 void GWindow::SetAsContext()

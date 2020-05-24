@@ -20,10 +20,11 @@ public:
 		return InputManagerSingleton ? InputManagerSingleton : (InputManagerSingleton = std::shared_ptr<IInputManager>(new IInputManager()));
 	}
 
-	template <typename... DelegateParamTypes>
-	inline void BindDelegate(const EInputKey& KeyToBindTo, DelegateParamTypes... DelegateParams)
+	// Bind a delgate made from a class and a pointer to a member method
+	template <class DelegatorType>
+	inline void BindDelegate(const EInputKey& KeyToBindTo, DelegatorType* Delegator, void (DelegatorType::* DelegatorMethod)(void))
 	{
-		BindDelegate(KeyToBindTo, (const KeyBindDelegate&)std::bind(DelegateParams...));
+		BindDelegate(KeyToBindTo, (const KeyBindDelegate&)std::bind(DelegatorMethod, Delegator));
 	}
 
 	void BindDelegate(const EInputKey& KeyToBindTo, const KeyBindDelegate& Delegate);
