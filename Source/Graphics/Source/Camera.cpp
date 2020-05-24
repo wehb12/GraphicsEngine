@@ -18,6 +18,7 @@ GCamera::GCamera(const float& FOV, const float& AspectRatio, const float& NearPl
 	ProjectionViewMatrix = std::make_shared<glm::mat4>(1.0f);
 
 	IInputManager::Get()->BindDelegate(this, &GCamera::HandleCursorMove);
+	IInputManager::Get()->BindDelegate(this, &GCamera::HandleScroll);
 }
 
 GCamera::~GCamera()
@@ -62,6 +63,14 @@ void GCamera::HandleInputs(const float& DeltaTime)
 	{
 		MoveRight(DeltaTime);
 	}
+	if (IInputManager::Get()->IsKeyPressed(UP_KEYS))
+	{
+		MoveUp(DeltaTime);
+	}
+	if (IInputManager::Get()->IsKeyPressed(DOWN_KEYS))
+	{
+		MoveDown(DeltaTime);
+	}
 }
 
 void GCamera::MoveForward(const float& DeltaTime)
@@ -84,10 +93,25 @@ void GCamera::MoveLeft(const float& DeltaTime)
 	*CameraPosition -= CameraSpeed * DeltaTime * *CameraRightVector;
 }
 
+void GCamera::MoveUp(const float& DeltaTime)
+{
+	*CameraPosition += CameraSpeed * DeltaTime * *CameraUpVector;
+}
+
+void GCamera::MoveDown(const float& DeltaTime)
+{
+	*CameraPosition -= CameraSpeed * DeltaTime * *CameraUpVector;
+}
+
 void GCamera::HandleCursorMove(double DeltaX, double DeltaY)
 {
 	CameraYaw += DeltaX * MouseSensitivity;
 	CameraPitch -= DeltaY * MouseSensitivity;
 
 	CameraPitch = INRANGE(CameraPitch, -90.0f, 90.0f);
+}
+
+void GCamera::HandleScroll(double DeltaScroll)
+{
+	*CameraPosition += *CameraForwardVector * (float)DeltaScroll;
 }

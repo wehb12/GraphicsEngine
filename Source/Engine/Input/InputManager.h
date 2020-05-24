@@ -7,9 +7,10 @@
 #include <memory>
 #include <vector>
 
-using KeyBindDelegate = std::function<void(void)>;
+using KeyPressDelegate = std::function<void(void)>;
 // MouseBindDelegate takes in the CHANGE in X and Y coordinates
-using MouseBindDelegate = std::function<void(double, double)>;
+using MouseMoveDelegate = std::function<void(double, double)>;
+using MouseScrollDelegate = std::function<void(double)>;
 
 class IInputManager
 {
@@ -26,10 +27,10 @@ public:
 	template <class DelegatorType>
 	inline void BindDelegate(const EInputKey& KeyToBindTo, DelegatorType* Delegator, void (DelegatorType::* DelegatorMethod)(void))
 	{
-		BindDelegate(KeyToBindTo, (const KeyBindDelegate&)std::bind(DelegatorMethod, Delegator));
+		BindDelegate(KeyToBindTo, (const KeyPressDelegate&)std::bind(DelegatorMethod, Delegator));
 	}
 
-	void BindDelegate(const EInputKey& KeyToBindTo, const KeyBindDelegate& Delegate)
+	void BindDelegate(const EInputKey& KeyToBindTo, const KeyPressDelegate& Delegate)
 	{
 		KeyBindingsMap[KeyToBindTo].push_back(Delegate);
 	}
@@ -38,17 +39,31 @@ public:
 	template <class DelegatorType>
 	inline void BindDelegate(DelegatorType* Delegator, void (DelegatorType::* DelegatorMethod)(double, double))
 	{
-		BindDelegate((const MouseBindDelegate&)std::bind(DelegatorMethod, Delegator, std::placeholders::_1, std::placeholders::_2));
+		BindDelegate((const MouseMoveDelegate&)std::bind(DelegatorMethod, Delegator, std::placeholders::_1, std::placeholders::_2));
 	}
 
-	void BindDelegate(const MouseBindDelegate& Delegate)
+	void BindDelegate(const MouseMoveDelegate& Delegate)
 	{
-		MouseBindings.push_back(Delegate);
+		MouseMoveBindings.push_back(Delegate);
+	}
+
+	// Bind a delgate made from a class and a pointer to a member method
+	template <class DelegatorType>
+	inline void BindDelegate(DelegatorType* Delegator, void (DelegatorType::* DelegatorMethod)(double))
+	{
+		BindDelegate((const MouseScrollDelegate&)std::bind(DelegatorMethod, Delegator, std::placeholders::_1));
+	}
+
+	void BindDelegate(const MouseScrollDelegate& Delegate)
+	{
+		MouseScrollBindings.push_back(Delegate);
 	}
 
 	void HandleKeyPress(const EInputKey& Key);
 
 	void HandleMouseMove(double XPosition, double YPosition);
+
+	void HandleMouseScroll(double ScrollPosition);
 
 	bool IsKeyPressed(const EInputKey& Key);
 
@@ -62,8 +77,9 @@ public:
 private:
 	static std::shared_ptr<IInputManager> InputManagerSingleton;
 
-	std::map<EInputKey, std::vector<KeyBindDelegate>> KeyBindingsMap;
-	std::vector<MouseBindDelegate> MouseBindings;
+	std::map<EInputKey, std::vector<KeyPressDelegate>> KeyBindingsMap;
+	std::vector<MouseMoveDelegate> MouseMoveBindings;
+	std::vector<MouseScrollDelegate> MouseScrollBindings;
 
 	double LastMouseXPosition = 0.0;
 	double LastMouseYPosition = 0.0;

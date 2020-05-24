@@ -12,6 +12,7 @@ std::shared_ptr<IInputManager> IInputManager::InputManagerSingleton;
 
 void GLFWKeyPressDelegate(GLFWwindow* Window, int Key, int Scancode, int Action, int Mods);
 void GLFWMouseMoveDelegate(GLFWwindow* Window, double XPosition, double YPosition);
+void GLFWMouseScrollDelegate(GLFWwindow* Window, double XPosition, double YPosition);
 
 IInputManager::IInputManager()
 {
@@ -20,6 +21,7 @@ IInputManager::IInputManager()
 
 	glfwGetCursorPos((GLFWwindow*)GraphicsWindow, &LastMouseXPosition, &LastMouseYPosition);
 	glfwSetCursorPosCallback((GLFWwindow*)GraphicsWindow, GLFWMouseMoveDelegate);
+	glfwSetScrollCallback((GLFWwindow*)GraphicsWindow, GLFWMouseScrollDelegate);
 }
 
 void IInputManager::HandleKeyPress(const EInputKey& Key)
@@ -27,9 +29,9 @@ void IInputManager::HandleKeyPress(const EInputKey& Key)
 	auto& KeyBindingsIt = KeyBindingsMap.find(Key);
 	if (KeyBindingsIt != KeyBindingsMap.end())
 	{
-		std::vector<KeyBindDelegate> KeyBindDelegates = KeyBindingsIt->second;
+		std::vector<KeyPressDelegate> KeyBindDelegates = KeyBindingsIt->second;
 
-		for (const KeyBindDelegate& Delegate : KeyBindDelegates)
+		for (const KeyPressDelegate& Delegate : KeyBindDelegates)
 		{
 			Delegate();
 		}
@@ -38,13 +40,21 @@ void IInputManager::HandleKeyPress(const EInputKey& Key)
 
 void IInputManager::HandleMouseMove(double XPosition, double YPosition)
 {
-	for (const MouseBindDelegate& Delegate : MouseBindings)
+	for (const MouseMoveDelegate& Delegate : MouseMoveBindings)
 	{
 		Delegate(XPosition - LastMouseXPosition, YPosition - LastMouseYPosition);
 	}
 
 	LastMouseXPosition = XPosition;
 	LastMouseYPosition = YPosition;
+}
+
+void IInputManager::HandleMouseScroll(double ScrollPosition)
+{
+	for (const MouseScrollDelegate& Delegate : MouseScrollBindings)
+	{
+		Delegate(ScrollPosition);
+	}
 }
 
 bool IInputManager::IsKeyPressed(const EInputKey& Key)
@@ -61,4 +71,9 @@ void GLFWKeyPressDelegate(GLFWwindow* Window, int Key, int Scancode, int Action,
 void GLFWMouseMoveDelegate(GLFWwindow* Window, double XPosition, double YPosition)
 {
 	IInputManager::Get()->HandleMouseMove(XPosition, YPosition);
+}
+
+void GLFWMouseScrollDelegate(GLFWwindow* Window, double XPosition, double YPosition)
+{
+	IInputManager::Get()->HandleMouseScroll(YPosition);
 }

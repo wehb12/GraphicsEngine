@@ -42,7 +42,13 @@ private:
 
 	void MoveLeft(const float& DeltaTime);
 
+	void MoveUp(const float& DeltaTime);
+
+	void MoveDown(const float& DeltaTime);
+
 	void HandleCursorMove(double DeltaX, double DeltaY);
+
+	void HandleScroll(double DeltaScroll);
 
 private:
 	std::shared_ptr<glm::mat4> ProjectionMatrix;
