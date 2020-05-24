@@ -11,15 +11,15 @@
 std::shared_ptr<IInputManager> IInputManager::InputManagerSingleton;
 
 void GLFWKeyPressDelegate(GLFWwindow* Window, int Key, int Scancode, int Action, int Mods);
+void GLFWMouseMoveDelegate(GLFWwindow* Window, double XPosition, double YPosition);
 
 IInputManager::IInputManager()
 {
-	glfwSetKeyCallback((GLFWwindow*)GWindow::Get()->GetRawWindowPtr(), GLFWKeyPressDelegate);
-}
+	GraphicsWindow = GWindow::Get()->GetRawWindowPtr();
+	glfwSetKeyCallback((GLFWwindow*)GraphicsWindow, GLFWKeyPressDelegate);
 
-void IInputManager::BindDelegate(const EInputKey& KeyToBindTo, const KeyBindDelegate& Delegate)
-{
-	KeyBindingsMap[KeyToBindTo].push_back(Delegate);
+	glfwGetCursorPos((GLFWwindow*)GraphicsWindow, &LastMouseXPosition, &LastMouseYPosition);
+	glfwSetCursorPosCallback((GLFWwindow*)GraphicsWindow, GLFWMouseMoveDelegate);
 }
 
 void IInputManager::HandleKeyPress(const EInputKey& Key)
@@ -36,6 +36,17 @@ void IInputManager::HandleKeyPress(const EInputKey& Key)
 	}
 }
 
+void IInputManager::HandleMouseMove(double XPosition, double YPosition)
+{
+	for (const MouseBindDelegate& Delegate : MouseBindings)
+	{
+		Delegate(XPosition - LastMouseXPosition, YPosition - LastMouseYPosition);
+	}
+
+	LastMouseXPosition = XPosition;
+	LastMouseYPosition = YPosition;
+}
+
 bool IInputManager::IsKeyPressed(const EInputKey& Key)
 {
 	return glfwGetKey((GLFWwindow*)GWindow::Get()->GetRawWindowPtr(), GetGLFWKeyFromInputKey(Key));
@@ -45,4 +56,9 @@ void GLFWKeyPressDelegate(GLFWwindow* Window, int Key, int Scancode, int Action,
 {
 	const EInputKey InputKey = GetKeyFromGLFWKey(Key);
 	IInputManager::Get()->HandleKeyPress(InputKey);
+}
+
+void GLFWMouseMoveDelegate(GLFWwindow* Window, double XPosition, double YPosition)
+{
+	IInputManager::Get()->HandleMouseMove(XPosition, YPosition);
 }

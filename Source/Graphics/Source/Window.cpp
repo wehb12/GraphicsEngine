@@ -15,6 +15,8 @@ GWindow::GWindow(const std::string& InName, const int InWindowWidth /*= 800*/, c
     GraphicsWindow = glfwCreateWindow(WindowWidth, WindowHeight, WindowName.c_str(), NULL, NULL);
 
     ASSERT_FAIL(GraphicsWindow, glfwTerminate());
+
+    glfwSetInputMode((GLFWwindow*)GraphicsWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 };
 
 GWindow::~GWindow()
