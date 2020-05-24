@@ -19,7 +19,7 @@ GWindow::GWindow(const std::string& InName, const int InWindowWidth /*= 800*/, c
 
 GWindow::~GWindow()
 {
-    glfwDestroyWindow(GraphicsWindow);
+    glfwDestroyWindow((GLFWwindow*)GraphicsWindow);
 }
 
 void GWindow::Init()
@@ -29,12 +29,17 @@ void GWindow::Init()
 
 void GWindow::SetAsContext()
 {
-    glfwMakeContextCurrent(GraphicsWindow);
+    glfwMakeContextCurrent((GLFWwindow*)GraphicsWindow);
+}
+
+void ViewPortSizeCallback(GLFWwindow* Window, int NewWidth, int NewHeight)
+{
+    glViewport(0, 0, NewWidth, NewHeight);
 }
 
 void GWindow::SetupViewport()
 {
-    glfwSetFramebufferSizeCallback(GraphicsWindow, GWindow::ViewPortSizeCallback);
+    glfwSetFramebufferSizeCallback((GLFWwindow*)GraphicsWindow, ViewPortSizeCallback);
 }
 
 void GWindow::ClearToBackground()
@@ -45,21 +50,16 @@ void GWindow::ClearToBackground()
 
 bool GWindow::ShouldClose()
 {
-    return glfwWindowShouldClose(GraphicsWindow);
+    return glfwWindowShouldClose((GLFWwindow*)GraphicsWindow);
 }
 
 void GWindow::SwapBuffers()
 {
-    glfwSwapBuffers(GraphicsWindow);
+    glfwSwapBuffers((GLFWwindow*)GraphicsWindow);
     glfwPollEvents();
 }
 
 void GWindow::CloseWindow()
 {
-    glfwSetWindowShouldClose(GraphicsWindow, true);
-}
-
-void GWindow::ViewPortSizeCallback(GGraphicsWindow* Window, int NewWidth, int NewHeight)
-{
-    glViewport(0, 0, NewWidth, NewHeight);
+    glfwSetWindowShouldClose((GLFWwindow*)GraphicsWindow, true);
 }

@@ -3,8 +3,7 @@
 #include <memory>
 #include <string>
 
-struct GLFWwindow;
-typedef GLFWwindow GGraphicsWindow;
+struct GGraphicsWindow;
 
 class GWindow
 {
@@ -37,8 +36,6 @@ private:
 
 	static std::shared_ptr<GWindow> WindowSingleton;
 
-	static void ViewPortSizeCallback(GGraphicsWindow* Window, int NewWidth, int NewHeight);
-
 	inline void* GetRawWindowPtr()
 	{
 		return (void*)GraphicsWindow;
@@ -51,5 +48,5 @@ protected:
 	float BackGroundColour[4] = { 0.2f, 0.2f, 0.2f, 1.0f };
 
 private:
-	GGraphicsWindow* GraphicsWindow;
+	void* GraphicsWindow;
 };
