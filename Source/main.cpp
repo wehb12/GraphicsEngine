@@ -25,8 +25,10 @@ int WinMain()
 	while (!ShouldClose())
 	{
 		CGlobalTimer::Get()->Tick();
-		Camera->Tick();
-		Renderer.Tick();
+
+		const float DeltaTime = (float)CGlobalTimer::Get()->GetFrameTime();
+		Camera->Tick(DeltaTime);
+		Renderer.Tick(DeltaTime);
 	}
 
 	return 0;

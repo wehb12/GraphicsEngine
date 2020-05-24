@@ -53,7 +53,7 @@ GMesh::~GMesh()
 {
 }
 
-void GMesh::Tick()
+void GMesh::Tick(const float& DeltaTime)
 {
 	// TODO: move this to a timer class
 	const double StartTime = glfwGetTime();

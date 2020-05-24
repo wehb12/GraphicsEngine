@@ -12,7 +12,7 @@ public:
 
 	~GCamera();
 
-	void Tick();
+	void Tick(const float& DeltaTime);
 
 	inline const std::shared_ptr<glm::mat4> GetProjectionMatrix() const
 	{

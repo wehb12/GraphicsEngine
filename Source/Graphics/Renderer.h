@@ -18,7 +18,7 @@ public:
 
 	void Init();
 
-	void Tick();
+	void Tick(const float& DeltaTime);
 
 	inline void AddCamera(const std::shared_ptr<const GCamera> Camera)
 	{

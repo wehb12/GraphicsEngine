@@ -27,7 +27,7 @@ public:
 
 	~GMesh();
 
-	void Tick();
+	void Tick(const float& DeltaTime);
 
 	// Manually add mesh data
 	inline void AddVertex(std::initializer_list<float> VertexList)

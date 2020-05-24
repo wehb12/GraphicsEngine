@@ -82,9 +82,9 @@ void GRenderer::Init()
     TriangleMesh->BindBuffers();
 }
 
-void GRenderer::Tick()
+void GRenderer::Tick(const float& DeltaTime)
 {
-    TriangleMesh->Tick();
+    TriangleMesh->Tick(DeltaTime);
     HelloTriangleShader->BufferModelMatrix(TriangleMesh->GetModelMatrix());
     HelloTriangleShader->BufferProjectionViewMatrix(CameraPtr->GetProjectionViewMatrix());
 

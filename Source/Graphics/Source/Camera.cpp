@@ -31,7 +31,7 @@ GCamera::~GCamera()
 {
 }
 
-void GCamera::Tick()
+void GCamera::Tick(const float& DeltaTime)
 {
 	*ViewMatrix = glm::lookAt(*CameraPosition, *CameraPosition + *CameraForwardVector, *CameraUpVector);
 	*ProjectionViewMatrix = *ProjectionMatrix * *ViewMatrix;
