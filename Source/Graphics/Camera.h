@@ -30,6 +30,8 @@ public:
 	}
 
 private:
+	void RecalculateMatrices();
+
 	void HandleInputs(const float& DeltaTime);
 
 	void MoveForward(const float& DeltaTime);
@@ -40,6 +42,8 @@ private:
 
 	void MoveLeft(const float& DeltaTime);
 
+	void HandleCursorMove(double DeltaX, double DeltaY);
+
 private:
 	std::shared_ptr<glm::mat4> ProjectionMatrix;
 	std::shared_ptr<glm::mat4> ViewMatrix;
@@ -48,6 +52,13 @@ private:
 	std::unique_ptr<glm::vec3> CameraPosition;
 	std::unique_ptr<const glm::vec3> CameraUpVector;
 	std::unique_ptr<glm::vec3> CameraForwardVector;
+	std::unique_ptr<glm::vec3> CameraRightVector;
+
+	// Pitch, yaw and roll stored in degrees
+	float CameraPitch = 0.0f;
+	float CameraYaw = 0.0f;
+	float CameraRoll = 0.0f;
 
 	const float CameraSpeed = 10.0f;
+	const float MouseSensitivity = 0.1f;
 };

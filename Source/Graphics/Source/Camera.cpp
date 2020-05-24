@@ -1,4 +1,5 @@
 #include "Graphics/Camera.h"
+#include "Common/MathsMacros.h"
 #include "Input/InputManager.h"
 #include "Input/InputKeyMacros.h"
 
@@ -10,10 +11,13 @@ GCamera::GCamera(const float& FOV, const float& AspectRatio, const float& NearPl
 	CameraPosition = std::make_unique<glm::vec3>(0.0f, 0.0f, 3.0f);
 	CameraUpVector = std::make_unique<glm::vec3>(0.0f, 1.0f, 0.0f);
 	CameraForwardVector = std::make_unique<glm::vec3>(0.0f, 0.0f, -1.0f);
+	CameraRightVector = std::make_unique<glm::vec3>(glm::cross(*CameraForwardVector, *CameraUpVector));
 
 	ProjectionMatrix = std::make_shared<glm::mat4>(glm::perspective(glm::radians(FOV), AspectRatio, NearPlane, FarPlane));
 	ViewMatrix = std::make_shared<glm::mat4>(glm::lookAt(*CameraPosition, *CameraPosition + *CameraForwardVector, *CameraUpVector));
 	ProjectionViewMatrix = std::make_shared<glm::mat4>(1.0f);
+
+	IInputManager::Get()->BindDelegate(this, &GCamera::HandleCursorMove);
 }
 
 GCamera::~GCamera()
@@ -23,6 +27,19 @@ GCamera::~GCamera()
 void GCamera::Tick(const float& DeltaTime)
 {
 	HandleInputs(DeltaTime);
+
+	RecalculateMatrices();
+}
+
+void GCamera::RecalculateMatrices()
+{
+	CameraForwardVector->x = glm::sin(glm::radians(CameraYaw)) * glm::cos(glm::radians(CameraPitch));
+	CameraForwardVector->y = glm::sin(glm::radians(CameraPitch));
+	CameraForwardVector->z = -glm::cos(glm::radians(CameraYaw)) * glm::cos(glm::radians(CameraPitch));
+	*CameraForwardVector = glm::normalize(*CameraForwardVector);
+
+	*CameraRightVector = glm::cross(*CameraForwardVector, *CameraUpVector);
+
 	*ViewMatrix = glm::lookAt(*CameraPosition, *CameraPosition + *CameraForwardVector, *CameraUpVector);
 	*ProjectionViewMatrix = *ProjectionMatrix * *ViewMatrix;
 }
@@ -59,10 +76,18 @@ void GCamera::MoveBackwards(const float& DeltaTime)
 
 void GCamera::MoveRight(const float& DeltaTime)
 {
-	*CameraPosition += CameraSpeed * DeltaTime * glm::vec3(1.0f, 0.0f, 0.0f);
+	*CameraPosition += CameraSpeed * DeltaTime * *CameraRightVector;
 }
 
 void GCamera::MoveLeft(const float& DeltaTime)
 {
-	*CameraPosition -= CameraSpeed * DeltaTime * glm::vec3(1.0f, 0.0f, 0.0f);
+	*CameraPosition -= CameraSpeed * DeltaTime * *CameraRightVector;
+}
+
+void GCamera::HandleCursorMove(double DeltaX, double DeltaY)
+{
+	CameraYaw += DeltaX * MouseSensitivity;
+	CameraPitch -= DeltaY * MouseSensitivity;
+
+	CameraPitch = INRANGE(CameraPitch, -90.0f, 90.0f);
 }
