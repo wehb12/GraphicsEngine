@@ -30,7 +30,22 @@ public:
 	}
 
 private:
+	void MoveForward();
+
+	void MoveBackwards();
+
+	void MoveRight();
+
+	void MoveLeft();
+
+private:
 	std::shared_ptr<glm::mat4> ProjectionMatrix;
 	std::shared_ptr<glm::mat4> ViewMatrix;
 	std::shared_ptr<glm::mat4> ProjectionViewMatrix;
+
+	std::unique_ptr<glm::vec3> CameraPosition;
+	std::unique_ptr<const glm::vec3> CameraUpVector;
+	std::unique_ptr<glm::vec3> CameraForwardVector;
+
+	const float CameraSpeed = 0.05f;
 };
