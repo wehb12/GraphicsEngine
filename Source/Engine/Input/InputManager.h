@@ -33,8 +33,18 @@ public:
 
 	bool IsKeyPressed(const EInputKey& Key);
 
+	// OR together any number of keys to see if any are pressed
+	template <typename... InputKeyType>
+	inline bool IsKeyPressed(const EInputKey& Key, InputKeyType... InputKeys)
+	{
+		return IsKeyPressed(Key) || IsKeyPressed(InputKeys...);
+	}
+
+
 private:
 	static std::shared_ptr<IInputManager> InputManagerSingleton;
 
 	std::map<EInputKey, std::vector<KeyBindDelegate>> KeyBindingsMap;
+
+	void* GraphicsWindow;
 };

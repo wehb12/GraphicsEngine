@@ -30,13 +30,15 @@ public:
 	}
 
 private:
-	void MoveForward();
+	void HandleInputs(const float& DeltaTime);
 
-	void MoveBackwards();
+	void MoveForward(const float& DeltaTime);
 
-	void MoveRight();
+	void MoveBackwards(const float& DeltaTime);
 
-	void MoveLeft();
+	void MoveRight(const float& DeltaTime);
+
+	void MoveLeft(const float& DeltaTime);
 
 private:
 	std::shared_ptr<glm::mat4> ProjectionMatrix;
@@ -47,5 +49,5 @@ private:
 	std::unique_ptr<const glm::vec3> CameraUpVector;
 	std::unique_ptr<glm::vec3> CameraForwardVector;
 
-	const float CameraSpeed = 0.05f;
+	const float CameraSpeed = 10.0f;
 };

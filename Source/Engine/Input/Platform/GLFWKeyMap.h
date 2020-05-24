@@ -171,7 +171,7 @@ const EInputKey GetKeyFromGLFWKey(const unsigned short GLFWKey)
 	return GetGLFWKeyMap().at(GLFWKey);
 }
 
-const unsigned short GetKeyFromInputKey(const EInputKey InputKey)
+const unsigned short GetGLFWKeyFromInputKey(const EInputKey InputKey)
 {
 	return GetGLFWKeyArray()[(unsigned int)InputKey];
 }

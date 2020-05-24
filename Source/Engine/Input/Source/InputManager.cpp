@@ -36,6 +36,11 @@ void IInputManager::HandleKeyPress(const EInputKey& Key)
 	}
 }
 
+bool IInputManager::IsKeyPressed(const EInputKey& Key)
+{
+	return glfwGetKey((GLFWwindow*)GWindow::Get()->GetRawWindowPtr(), GetGLFWKeyFromInputKey(Key));
+}
+
 void GLFWKeyPressDelegate(GLFWwindow* Window, int Key, int Scancode, int Action, int Mods)
 {
 	const EInputKey InputKey = GetKeyFromGLFWKey(Key);

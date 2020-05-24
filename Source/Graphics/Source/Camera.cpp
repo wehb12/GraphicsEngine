@@ -1,5 +1,6 @@
 #include "Graphics/Camera.h"
 #include "Input/InputManager.h"
+#include "Input/InputKeyMacros.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -13,18 +14,6 @@ GCamera::GCamera(const float& FOV, const float& AspectRatio, const float& NearPl
 	ProjectionMatrix = std::make_shared<glm::mat4>(glm::perspective(glm::radians(FOV), AspectRatio, NearPlane, FarPlane));
 	ViewMatrix = std::make_shared<glm::mat4>(glm::lookAt(*CameraPosition, *CameraPosition + *CameraForwardVector, *CameraUpVector));
 	ProjectionViewMatrix = std::make_shared<glm::mat4>(1.0f);
-
-	IInputManager::Get()->BindDelegate(EInputKey::ARROW_UP, this, &GCamera::MoveForward);
-	IInputManager::Get()->BindDelegate(EInputKey::W, this, &GCamera::MoveForward);
-
-	IInputManager::Get()->BindDelegate(EInputKey::ARROW_DOWN, this, &GCamera::MoveBackwards);
-	IInputManager::Get()->BindDelegate(EInputKey::S, this, &GCamera::MoveBackwards);
-
-	IInputManager::Get()->BindDelegate(EInputKey::ARROW_LEFT, this, &GCamera::MoveLeft);
-	IInputManager::Get()->BindDelegate(EInputKey::A, this, &GCamera::MoveLeft);
-
-	IInputManager::Get()->BindDelegate(EInputKey::ARROW_RIGHT, this, &GCamera::MoveRight);
-	IInputManager::Get()->BindDelegate(EInputKey::D, this, &GCamera::MoveRight);
 }
 
 GCamera::~GCamera()
@@ -33,26 +22,47 @@ GCamera::~GCamera()
 
 void GCamera::Tick(const float& DeltaTime)
 {
+	HandleInputs(DeltaTime);
 	*ViewMatrix = glm::lookAt(*CameraPosition, *CameraPosition + *CameraForwardVector, *CameraUpVector);
 	*ProjectionViewMatrix = *ProjectionMatrix * *ViewMatrix;
 }
 
-void GCamera::MoveForward()
+void GCamera::HandleInputs(const float& DeltaTime)
 {
-	*CameraPosition += CameraSpeed * *CameraForwardVector;
+	if (IInputManager::Get()->IsKeyPressed(FORWARD_KEYS))
+	{
+		MoveForward(DeltaTime);
+	}
+	if (IInputManager::Get()->IsKeyPressed(BACKWARD_KEYS))
+	{
+		MoveBackwards(DeltaTime);
+	}
+	if (IInputManager::Get()->IsKeyPressed(LEFT_KEYS))
+	{
+		MoveLeft(DeltaTime);
+	}
+	if (IInputManager::Get()->IsKeyPressed(RIGHT_KEYS))
+	{
+		MoveRight(DeltaTime);
+	}
 }
 
-void GCamera::MoveBackwards()
+void GCamera::MoveForward(const float& DeltaTime)
 {
-	*CameraPosition -= CameraSpeed * *CameraForwardVector;
+	*CameraPosition += CameraSpeed * DeltaTime * *CameraForwardVector;
 }
 
-void GCamera::MoveRight()
+void GCamera::MoveBackwards(const float& DeltaTime)
 {
-	*CameraPosition += CameraSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
+	*CameraPosition -= CameraSpeed * DeltaTime * *CameraForwardVector;
 }
 
-void GCamera::MoveLeft()
+void GCamera::MoveRight(const float& DeltaTime)
 {
-	*CameraPosition -= CameraSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
+	*CameraPosition += CameraSpeed * DeltaTime * glm::vec3(1.0f, 0.0f, 0.0f);
+}
+
+void GCamera::MoveLeft(const float& DeltaTime)
+{
+	*CameraPosition -= CameraSpeed * DeltaTime * glm::vec3(1.0f, 0.0f, 0.0f);
 }
