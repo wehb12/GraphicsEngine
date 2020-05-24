@@ -31,6 +31,8 @@ public:
 
 	void HandleKeyPress(const EInputKey& Key);
 
+	bool IsKeyPressed(const EInputKey& Key);
+
 private:
 	static std::shared_ptr<IInputManager> InputManagerSingleton;
 
