@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/fwd.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <initializer_list>
 #include <string>
@@ -18,9 +19,17 @@ public:
 
     void UseProgram();
 
-    void BufferModelMatrix(const std::shared_ptr<glm::mat4> ModelMatrix);
+    inline void BufferModelMatrix(const std::shared_ptr<glm::mat4> ModelMatrix)
+    {
+        BufferFloatUniform("ModelMatrix", glm::value_ptr(*ModelMatrix));
+    }
 
-    void BufferProjectionViewMatrix(const std::shared_ptr<glm::mat4> ProjectionViewMatrix);
+    inline void BufferProjectionViewMatrix(const std::shared_ptr<glm::mat4> ProjectionViewMatrix)
+    {
+        BufferFloatUniform("ProjectionViewMatrix", glm::value_ptr(*ProjectionViewMatrix));
+    }
+
+    void BufferFloatUniform(const char* UniformName, float* UniformData);
 
 private:
     void DetermineShaderStageTypes(const std::vector<std::string>& ShaderList);
