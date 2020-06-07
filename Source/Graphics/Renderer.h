@@ -45,7 +45,7 @@ private:
 
 	std::unique_ptr<GShader> HelloTriangleShader;
 
-	std::unique_ptr<GMesh> TriangleMesh;
+	std::vector<std::unique_ptr<GMesh>> Meshes;
 
 	std::shared_ptr<const GCamera> CameraPtr;
 };

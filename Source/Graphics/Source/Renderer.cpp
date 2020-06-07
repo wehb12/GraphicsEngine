@@ -40,7 +40,8 @@ void GRenderer::Init()
 
     HelloTriangleShader->UseProgram();
 
-    TriangleMesh = std::unique_ptr<GMesh>(new GMesh());
+    std::unique_ptr<GMesh> TriangleMesh = std::make_unique<GMesh>();
+
     TriangleMesh->AddVertex(
         { 0.0f, 0.5f, 0.0f },
         { 1.0f, 0.0f, 0.0f, 1.0f },
@@ -79,13 +80,44 @@ void GRenderer::Init()
     // Rectangle
     TriangleMesh->AddIndices(1, 4, 2, 2, 4, 3);
 
+    TriangleMesh->Rotate(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    TriangleMesh->Scale(3.0f);
+
     TriangleMesh->BindBuffers();
+
+    std::unique_ptr<GMesh> LightCubeMesh = std::make_unique<GMesh>();
+
+    LightCubeMesh = std::unique_ptr<GMesh>(new GMesh());
+    LightCubeMesh->AddVertex(
+        { -0.5f, -0.5f, 0.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f }
+    );
+    LightCubeMesh->AddVertex(
+        { -0.5f, 0.5f, 0.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f }
+    );
+    LightCubeMesh->AddVertex(
+        { 0.5f, 0.5f, 0.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f }
+    );
+    LightCubeMesh->AddVertex(
+        { 0.5f, -0.5f, 0.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f }
+    );
+    LightCubeMesh->AddIndices(0, 1, 3, 1, 2, 3);
+    LightCubeMesh->BindBuffers();
+
+    Meshes.push_back(std::move(TriangleMesh));
+    Meshes.push_back(std::move(LightCubeMesh));
 }
 
 void GRenderer::Tick(const float& DeltaTime)
 {
-    TriangleMesh->Tick(DeltaTime);
-    HelloTriangleShader->BufferModelMatrix(TriangleMesh->GetModelMatrix());
+    for (std::unique_ptr<GMesh>& Mesh : Meshes)
+    {
+        Mesh->Tick(DeltaTime);
+    }
+
     HelloTriangleShader->BufferProjectionViewMatrix(CameraPtr->GetProjectionViewMatrix());
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -145,7 +177,12 @@ void GRenderer::RenderScene()
 {
     WindowPtr->ClearToBackground();
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    for (std::unique_ptr<GMesh>& Mesh : Meshes)
+    {
+        HelloTriangleShader->BufferModelMatrix(Mesh->GetModelMatrix());
+        Mesh->BindVertexArray();
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    }
 }
 
 void GRenderer::Terminate()
