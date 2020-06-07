@@ -8,7 +8,7 @@
 
 GCamera::GCamera(const float& FOV, const float& AspectRatio, const float& NearPlane, const float& FarPlane)
 {
-	CameraPosition = std::make_unique<glm::vec3>(0.0f, 0.0f, 3.0f);
+	CameraPosition = std::make_unique<glm::vec3>(0.0f, 1.0f, 3.0f);
 	CameraUpVector = std::make_unique<glm::vec3>(0.0f, 1.0f, 0.0f);
 	CameraForwardVector = std::make_unique<glm::vec3>(0.0f, 0.0f, -1.0f);
 	CameraRightVector = std::make_unique<glm::vec3>(glm::cross(*CameraForwardVector, *CameraUpVector));

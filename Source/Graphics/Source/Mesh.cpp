@@ -30,12 +30,9 @@ struct GraphicsMesh
 	GLuint GLMesh = 0;
 };
 
-
 GMesh::GMesh(const std::string& MeshName)
 {
 	ModelMatrix = std::shared_ptr<glm::mat4>(new glm::mat4(1.0f));
-
-	*ModelMatrix = glm::rotate(*ModelMatrix, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 	if (MeshName.size() != 0)
 	{
@@ -60,6 +57,16 @@ void GMesh::Tick(const float& DeltaTime)
 
 	const float Scale = std::sin(StartTime) + 1;
 	//*ModelMatrix = glm::scale(glm::identity<glm::mat4>(), glm::vec3(Scale, Scale, Scale));
+}
+
+void GMesh::Rotate(const float RotateAngle, const glm::vec3& RotationAxis)
+{
+	*ModelMatrix = glm::rotate(*ModelMatrix, RotateAngle, RotationAxis);
+}
+
+void GMesh::Scale(const float Scale)
+{
+	*ModelMatrix = glm::scale(*ModelMatrix, glm::vec3(Scale));
 }
 
 void GMesh::AddVertex(const float Vertex[3])
@@ -133,9 +140,9 @@ void GMesh::GenerateVertexArray()
 	glGenVertexArrays(1, (GLuint*)VertexArrayObject.get());
 }
 
-void GMesh::BindVertexArray(GraphicsMesh& VAO)
+void GMesh::BindVertexArray()
 {
-	glBindVertexArray(VAO);
+	glBindVertexArray(*VertexArrayObject);
 }
 
 void GMesh::GenerateBuffers()
@@ -179,7 +186,7 @@ void GMesh::BindBuffers(const bool& bCanEdit)
 	ASSERT(bIsEditable);
 
 	GenerateVertexArray();
-	BindVertexArray(*VertexArrayObject);
+	BindVertexArray();
 
 	GenerateBuffers();
 

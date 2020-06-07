@@ -29,6 +29,13 @@ public:
 
 	void Tick(const float& DeltaTime);
 
+	// Transform mesh methods
+	// Rotate by an angle in radians
+	void Rotate(const float RotateAngle, const glm::vec3& RotationAxis);
+
+	void Scale(const float Scale);
+	// ----------------------
+
 	// Manually add mesh data
 	inline void AddVertex(std::initializer_list<float> VertexList)
 	{
@@ -111,6 +118,7 @@ public:
 		Indices.push_back(Index);
 		AddIndices(Args...);
 	}
+	// ----------------------
 
 	void SetTexture(const std::string& TexturePath);
 
@@ -124,6 +132,8 @@ public:
 		BindBuffers(bIsEditable);
 	}
 
+	void BindVertexArray();
+
 	inline const std::shared_ptr<glm::mat4> GetModelMatrix()
 	{
 		return ModelMatrix;
@@ -131,8 +141,6 @@ public:
 
 private:
 	void GenerateVertexArray();
-
-	void BindVertexArray(GraphicsMesh& VAO);
 
 	void GenerateBuffers();
 
