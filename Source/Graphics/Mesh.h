@@ -36,6 +36,9 @@ public:
 	void Rotate(const float RotateAngle, const glm::vec3& RotationAxis);
 
 	void Scale(const float Scale);
+
+	void Translate(const glm::vec3& TranslationVector);
+
 	// ----------------------
 
 	// Manually add mesh data
@@ -142,6 +145,11 @@ public:
 	void BufferModelMatrixToShader(const std::shared_ptr<glm::mat4> ModelMatrix);
 
 	void BindVertexArray();
+
+	inline unsigned int GetDrawCount() const
+	{
+		return Indices.size() ? Indices.size() : Vertices.size();
+	}
 
 	inline const std::shared_ptr<glm::mat4> GetModelMatrix() const
 	{

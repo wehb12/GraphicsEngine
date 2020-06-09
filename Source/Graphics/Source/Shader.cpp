@@ -57,6 +57,7 @@ void GShader::UseProgram()
 
 void GShader::BufferFloatUniform(const char* UniformName, float* UniformData)
 {
+    UseProgram();
     glUniformMatrix4fv(glGetUniformLocation(*ShaderProgramPtr, UniformName), 1, GL_FALSE, UniformData);
 }
 

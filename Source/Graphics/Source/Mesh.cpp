@@ -69,6 +69,11 @@ void GMesh::Scale(const float Scale)
 	*ModelMatrix = glm::scale(*ModelMatrix, glm::vec3(Scale));
 }
 
+void GMesh::Translate(const glm::vec3& TranslationVector)
+{
+	*ModelMatrix = glm::translate(*ModelMatrix, TranslationVector);
+}
+
 void GMesh::AddVertex(const float Vertex[3])
 {
 	ASSERT(bIsEditable);
@@ -131,6 +136,8 @@ void GMesh::AddTexCoord(const float TexCoord[2])
 
 void GMesh::SetTexture(const std::string& TexturePath)
 {
+	ASSERT(Shader, "Shader must be set so texture can buffer itself to the shader");
+	Shader->UseProgram();
 	Texture = std::shared_ptr<GTexture>(new GTexture(TexturePath));
 }
 
@@ -143,6 +150,7 @@ void GMesh::GenerateVertexArray()
 void GMesh::BufferModelMatrixToShader(const std::shared_ptr<glm::mat4> ModelMatrix)
 {
 	ASSERT(Shader);
+	Shader->UseProgram();
 	Shader->BufferModelMatrix(ModelMatrix);
 }
 

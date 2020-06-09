@@ -46,8 +46,6 @@ void GRenderer::Init()
         }
     ));
 
-    TexturedShader->UseProgram();
-
     Shaders.push_back(std::move(SimpleShader));
     Shaders.push_back(std::move(TexturedShader));
 
@@ -83,6 +81,8 @@ void GRenderer::Init()
         { 0.0f, 1.0f }
     );
 
+    TriangleMesh->SetShader(TriangleMesh->HasTexCoords() ? Shaders[1] : Shaders[0]);
+
     TriangleMesh->SetTexture(TEXTURE_PATH("funky_squares.jpg"));
 
     // Triangle
@@ -96,31 +96,76 @@ void GRenderer::Init()
 
     TriangleMesh->BindBuffers();
 
-    TriangleMesh->SetShader(TriangleMesh->HasTexCoords() ? Shaders[1] : Shaders[0]);
-
     std::unique_ptr<GMesh> LightCubeMesh = std::make_unique<GMesh>();
 
     LightCubeMesh = std::unique_ptr<GMesh>(new GMesh());
+    // Front Bottom Left
     LightCubeMesh->AddVertex(
-        { -0.5f, -0.5f, 0.0f },
+        { -0.5f, -0.5f, 0.5f },
         { 1.0f, 1.0f, 1.0f, 1.0f }
     );
+    // Front Top Left
     LightCubeMesh->AddVertex(
-        { -0.5f, 0.5f, 0.0f },
+        { -0.5f, 0.5f, 0.5f },
         { 1.0f, 1.0f, 1.0f, 1.0f }
     );
+    // Front Top Right
     LightCubeMesh->AddVertex(
-        { 0.5f, 0.5f, 0.0f },
+        { 0.5f, 0.5f, 0.5f },
         { 1.0f, 1.0f, 1.0f, 1.0f }
     );
+    // Front Bottom Right
     LightCubeMesh->AddVertex(
-        { 0.5f, -0.5f, 0.0f },
+        { 0.5f, -0.5f, 0.5f },
         { 1.0f, 1.0f, 1.0f, 1.0f }
     );
-    LightCubeMesh->AddIndices(0, 1, 3, 1, 2, 3);
-    LightCubeMesh->BindBuffers();
+    // Back Bottom Left
+    LightCubeMesh->AddVertex(
+        { -0.5f, -0.5f, -0.5f },
+        { 1.0f, 1.0f, 1.0f, 1.0f }
+    );
+    // Back Top Left
+    LightCubeMesh->AddVertex(
+        { -0.5f, 0.5f, -0.5f },
+        { 1.0f, 1.0f, 1.0f, 1.0f }
+    );
+    // Back Top Right
+    LightCubeMesh->AddVertex(
+        { 0.5f, 0.5f, -0.5f },
+        { 1.0f, 1.0f, 1.0f, 1.0f }
+    );
+    // Back Bottom Right
+    LightCubeMesh->AddVertex(
+        { 0.5f, -0.5f, -0.5f },
+        { 1.0f, 1.0f, 1.0f, 1.0f }
+    );
+    LightCubeMesh->AddIndices(
+        // Front face
+        0, 1, 3,
+        1, 2, 3,
+        // Left face
+        4, 5, 0,
+        5, 1, 0,
+        // Top face
+        5, 6, 1,
+        6, 2, 1,
+        // Right face
+        3, 2, 7,
+        2, 6, 7,
+        // Back face
+        7, 6, 4,
+        6, 5, 4,
+        // Bottom face
+        4, 0, 7,
+        0, 3, 7
+       );
+
+    LightCubeMesh->Translate(glm::vec3(1.0f, 2.0f, -1.0f));
+    LightCubeMesh->Scale(0.5f);
 
     LightCubeMesh->SetShader(LightCubeMesh->HasTexCoords() ? Shaders[1] : Shaders[0]);
+
+    LightCubeMesh->BindBuffers();
 
     Meshes.push_back(std::move(TriangleMesh));
     Meshes.push_back(std::move(LightCubeMesh));
@@ -199,7 +244,7 @@ void GRenderer::RenderScene()
     {
         Mesh->BufferModelMatrixToShader(Mesh->GetModelMatrix());
         Mesh->BindVertexArray();
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, Mesh->GetDrawCount(), GL_UNSIGNED_INT, 0);
     }
 }
 
