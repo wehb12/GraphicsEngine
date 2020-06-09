@@ -3,11 +3,13 @@
 #include <glm/fwd.hpp>
 
 #include <algorithm>
+#include <array>
 #include <initializer_list>
 #include <memory>
 #include <string>
 #include <vector>
 
+class GShader;
 class GTexture;
 struct GraphicsMesh;
 
@@ -122,6 +124,11 @@ public:
 
 	void SetTexture(const std::string& TexturePath);
 
+	inline void SetShader(const std::shared_ptr<GShader>& InShader)
+	{
+		Shader = InShader;
+	}
+
 	inline bool IsEditable()
 	{
 		return bIsEditable;
@@ -132,11 +139,18 @@ public:
 		BindBuffers(bIsEditable);
 	}
 
+	void BufferModelMatrixToShader(const std::shared_ptr<glm::mat4> ModelMatrix);
+
 	void BindVertexArray();
 
-	inline const std::shared_ptr<glm::mat4> GetModelMatrix()
+	inline const std::shared_ptr<glm::mat4> GetModelMatrix() const
 	{
 		return ModelMatrix;
+	}
+
+	inline bool HasTexCoords() const
+	{
+		return TexCoords.size();
 	}
 
 private:
@@ -163,6 +177,7 @@ private:
 	std::unique_ptr<GraphicsMesh> VertexBufferObjects[EVertexBuffer::MAX];
 
 	std::shared_ptr<GTexture> Texture;
+	std::shared_ptr<GShader> Shader;
 
 	std::shared_ptr<glm::mat4> ModelMatrix;
 };

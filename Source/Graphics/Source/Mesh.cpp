@@ -1,5 +1,6 @@
 #include "Graphics/Mesh.h"
 #include "Common/DebugMacros.h"
+#include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
 #include <glad/glad.h>
@@ -7,7 +8,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <array>
 #include <cmath>
 #include <ctime>
 
@@ -138,6 +138,12 @@ void GMesh::GenerateVertexArray()
 {
 	VertexArrayObject = std::unique_ptr<GraphicsMesh>(new GraphicsMesh());
 	glGenVertexArrays(1, (GLuint*)VertexArrayObject.get());
+}
+
+void GMesh::BufferModelMatrixToShader(const std::shared_ptr<glm::mat4> ModelMatrix)
+{
+	ASSERT(Shader);
+	Shader->BufferModelMatrix(ModelMatrix);
 }
 
 void GMesh::BindVertexArray()

@@ -32,13 +32,24 @@ void GRenderer::Init()
     EnableDepthTest();
 
     // TODO: Move this call to Resource Handler
-    HelloTriangleShader = std::unique_ptr<GShader>(new GShader(
+    std::shared_ptr<GShader> SimpleShader = std::shared_ptr<GShader>(new GShader(
         {
-            SHADER_PATH("HelloTriangle/VertexShader.glsl"),
-            SHADER_PATH("HelloTriangle/FragmentShader.glsl")
-        }));
+            SHADER_PATH("Simple/VertexShader.glsl"),
+            SHADER_PATH("Simple/FragmentShader.glsl")
+        }
+    ));
 
-    HelloTriangleShader->UseProgram();
+    std::shared_ptr<GShader> TexturedShader = std::shared_ptr<GShader>(new GShader(
+        {
+            SHADER_PATH("Textured/VertexShader.glsl"),
+            SHADER_PATH("Textured/FragmentShader.glsl")
+        }
+    ));
+
+    TexturedShader->UseProgram();
+
+    Shaders.push_back(std::move(SimpleShader));
+    Shaders.push_back(std::move(TexturedShader));
 
     std::unique_ptr<GMesh> TriangleMesh = std::make_unique<GMesh>();
 
@@ -85,6 +96,8 @@ void GRenderer::Init()
 
     TriangleMesh->BindBuffers();
 
+    TriangleMesh->SetShader(TriangleMesh->HasTexCoords() ? Shaders[1] : Shaders[0]);
+
     std::unique_ptr<GMesh> LightCubeMesh = std::make_unique<GMesh>();
 
     LightCubeMesh = std::unique_ptr<GMesh>(new GMesh());
@@ -107,6 +120,8 @@ void GRenderer::Init()
     LightCubeMesh->AddIndices(0, 1, 3, 1, 2, 3);
     LightCubeMesh->BindBuffers();
 
+    LightCubeMesh->SetShader(LightCubeMesh->HasTexCoords() ? Shaders[1] : Shaders[0]);
+
     Meshes.push_back(std::move(TriangleMesh));
     Meshes.push_back(std::move(LightCubeMesh));
 }
@@ -118,7 +133,10 @@ void GRenderer::Tick(const float& DeltaTime)
         Mesh->Tick(DeltaTime);
     }
 
-    HelloTriangleShader->BufferProjectionViewMatrix(CameraPtr->GetProjectionViewMatrix());
+    for (std::shared_ptr<GShader>& Shader : Shaders)
+    {
+        Shader->BufferProjectionViewMatrix(CameraPtr->GetProjectionViewMatrix());
+    }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     RenderScene();
@@ -179,7 +197,7 @@ void GRenderer::RenderScene()
 
     for (std::unique_ptr<GMesh>& Mesh : Meshes)
     {
-        HelloTriangleShader->BufferModelMatrix(Mesh->GetModelMatrix());
+        Mesh->BufferModelMatrixToShader(Mesh->GetModelMatrix());
         Mesh->BindVertexArray();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     }

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
 #include <memory>
 #include <string>
+#include <vector>
 
 class GCamera;
 class GMesh;
@@ -43,7 +43,7 @@ private:
 private:
 	std::shared_ptr<GWindow> WindowPtr;
 
-	std::unique_ptr<GShader> HelloTriangleShader;
+	std::vector<std::shared_ptr<GShader>> Shaders;
 
 	std::vector<std::unique_ptr<GMesh>> Meshes;
 
