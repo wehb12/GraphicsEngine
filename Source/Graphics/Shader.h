@@ -17,19 +17,21 @@ public:
 
     ~GShader();
 
-    void UseProgram();
+    void UseProgram() const;
 
     inline void BufferModelMatrix(const std::shared_ptr<glm::mat4> ModelMatrix)
     {
-        BufferFloatUniform("ModelMatrix", glm::value_ptr(*ModelMatrix));
+        BufferFloatUniformMatrix4x4("ModelMatrix", glm::value_ptr(*ModelMatrix));
     }
 
     inline void BufferProjectionViewMatrix(const std::shared_ptr<glm::mat4> ProjectionViewMatrix)
     {
-        BufferFloatUniform("ProjectionViewMatrix", glm::value_ptr(*ProjectionViewMatrix));
+        BufferFloatUniformMatrix4x4("ProjectionViewMatrix", glm::value_ptr(*ProjectionViewMatrix));
     }
 
-    void BufferFloatUniform(const char* UniformName, float* UniformData);
+    void BufferFloatUniformMatrix4x4(const char* UniformName, const float* UniformData) const;
+
+    void BufferFloatUniformVector4(const char* UniformName, const float* UniformData) const;
 
 private:
     void DetermineShaderStageTypes(const std::vector<std::string>& ShaderList);

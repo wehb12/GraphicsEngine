@@ -49,16 +49,22 @@ GShader::~GShader()
     glDeleteProgram(*ShaderProgramPtr);
 }
 
-void GShader::UseProgram()
+void GShader::UseProgram() const
 {
     ASSERT(ShaderProgramPtr);
     glUseProgram(*ShaderProgramPtr);
 }
 
-void GShader::BufferFloatUniform(const char* UniformName, float* UniformData)
+void GShader::BufferFloatUniformMatrix4x4(const char* UniformName, const float* UniformData) const
 {
     UseProgram();
     glUniformMatrix4fv(glGetUniformLocation(*ShaderProgramPtr, UniformName), 1, GL_FALSE, UniformData);
+}
+
+void GShader::BufferFloatUniformVector4(const char* UniformName, const float* UniformData) const
+{
+    UseProgram();
+    glUniform4fv(glGetUniformLocation(*ShaderProgramPtr, UniformName), 1, UniformData);
 }
 
 void GShader::DetermineShaderStageTypes(const std::vector<std::string>& ShaderList)

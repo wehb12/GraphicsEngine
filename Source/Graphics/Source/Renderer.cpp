@@ -34,8 +34,8 @@ void GRenderer::Init()
     // TODO: Move this call to Resource Handler
     std::shared_ptr<GShader> SimpleShader = std::shared_ptr<GShader>(new GShader(
         {
-            SHADER_PATH("Simple/VertexShader.glsl"),
-            SHADER_PATH("Simple/FragmentShader.glsl")
+            SHADER_PATH("LightSourceShaders/VertexShader.glsl"),
+            SHADER_PATH("LightSourceShaders/FragmentShader.glsl")
         }
     ));
 
@@ -49,35 +49,42 @@ void GRenderer::Init()
     Shaders.push_back(std::move(SimpleShader));
     Shaders.push_back(std::move(TexturedShader));
 
+    // TODO: Move this to a LightSource class
+    for (std::shared_ptr<GShader>& Shader : Shaders)
+    {
+        const float LightColour[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        Shader->BufferFloatUniformVector4("LightColour", LightColour);
+    }
+
     std::unique_ptr<GMesh> TriangleMesh = std::make_unique<GMesh>();
 
     TriangleMesh->AddVertex(
         { 0.0f, 0.5f, 0.0f },
-        { 1.0f, 0.0f, 0.0f, 1.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f },
         { 0.5f, 1.0f }
     );
 
     TriangleMesh->AddVertex(
         { -0.5f, -0.5f, 0.0f },
-        { 0.0f, 1.0f, 0.0f, 1.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f },
         { 0.0f, 0.0f }
     );
 
     TriangleMesh->AddVertex(
         { 0.5f, -0.5f, 0.0f },
-        { 0.0f, 0.0f, 1.0f, 1.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f },
         { 1.0f, 0.0f }
     );
 
     TriangleMesh->AddVertex(
         { 0.5f, 0.5f, 0.0f },
-        { 0.0f, 0.0f, 1.0f, 1.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f },
         { 1.0f, 1.0f }
     );
 
     TriangleMesh->AddVertex(
         { -0.5f, 0.5f, 0.0f },
-        { 0.0f, 0.0f, 1.0f, 1.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f },
         { 0.0f, 1.0f }
     );
 
