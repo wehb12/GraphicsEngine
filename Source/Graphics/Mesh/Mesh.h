@@ -63,6 +63,8 @@ public:
 		AddColour(ColourArray);
 	}
 
+	void AddColour(const glm::vec4& ColourVector);
+
 	inline void AddTexCoord(std::initializer_list<float> TexCoordList)
 	{
 		float TexCoordArray[2];
@@ -126,6 +128,11 @@ public:
 	// ----------------------
 
 	void SetTexture(const std::string& TexturePath);
+
+	inline void SetTexture(const std::shared_ptr<GTexture>& InTexture)
+	{
+		Texture = InTexture;
+	}
 
 	inline void SetShader(const std::shared_ptr<GShader>& InShader)
 	{

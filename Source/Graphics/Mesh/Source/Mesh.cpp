@@ -1,4 +1,4 @@
-#include "Graphics/Mesh.h"
+#include "Graphics/Mesh/Mesh.h"
 #include "Common/DebugMacros.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
@@ -72,6 +72,11 @@ void GMesh::Scale(const float Scale)
 void GMesh::Translate(const glm::vec3& TranslationVector)
 {
 	*ModelMatrix = glm::translate(*ModelMatrix, TranslationVector);
+}
+
+void GMesh::AddColour(const glm::vec4& ColourVector)
+{
+	AddColour(&ColourVector[0]);
 }
 
 void GMesh::AddVertex(const float Vertex[3])
