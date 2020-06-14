@@ -31,6 +31,8 @@ public:
 
 	void Tick(const float& DeltaTime);
 
+	void Draw();
+
 	// Transform mesh methods
 	// Rotate by an angle in radians
 	void Rotate(const float RotateAngle, const glm::vec3& RotationAxis);

@@ -59,6 +59,15 @@ void GMesh::Tick(const float& DeltaTime)
 	//*ModelMatrix = glm::scale(glm::identity<glm::mat4>(), glm::vec3(Scale, Scale, Scale));
 }
 
+void GMesh::Draw()
+{
+	BufferModelMatrixToShader(ModelMatrix);
+	BindVertexArray();
+	Indices.size()
+		? glDrawElements(GL_TRIANGLES, GetDrawCount(), GL_UNSIGNED_INT, 0)
+		: glDrawArrays(GL_TRIANGLES, 0, GetDrawCount());
+}
+
 void GMesh::Rotate(const float RotateAngle, const glm::vec3& RotationAxis)
 {
 	*ModelMatrix = glm::rotate(*ModelMatrix, RotateAngle, RotationAxis);

@@ -160,9 +160,7 @@ void GRenderer::RenderScene()
 
     for (std::unique_ptr<GMesh>& Mesh : Meshes)
     {
-        Mesh->BufferModelMatrixToShader(Mesh->GetModelMatrix());
-        Mesh->BindVertexArray();
-        glDrawElements(GL_TRIANGLES, Mesh->GetDrawCount(), GL_UNSIGNED_INT, 0);
+		Mesh->Draw();
     }
 }
 
