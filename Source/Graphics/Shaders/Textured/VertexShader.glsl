@@ -18,6 +18,6 @@ void main()
     gl_Position = ProjectionViewMatrix * ModelMatrix * vec4(Position, 1.0);
     FragmentPosition = vec3(ModelMatrix * vec4(Position, 1.0));
     VertexColour = Colour;
-    VertexNormal = Normal;
+    VertexNormal = mat3(transpose(inverse(ModelMatrix))) * normalize(Normal);
     VertexTexCoord = TexCoord;
 }

@@ -13,6 +13,7 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <fstream>
 
 GRenderer::GRenderer()
 {
@@ -60,9 +61,9 @@ void GRenderer::Init()
 	Shaders.push_back(std::move(SimpleShader));
     Shaders.push_back(std::move(TexturedShader));
 
-	const glm::vec3 LightPosition = glm::vec3(1.5f, 2.0f, -1.5f);
+	const glm::vec3 LightPosition = glm::vec3(1.5f, 1.0f, -4.5f);
 
-    // TODO: Move this to a LightSource class
+    // TODO: Move this to a LightSource class Tick()
     for (std::shared_ptr<GShader>& Shader : Shaders)
     {
         const float LightColour[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -76,13 +77,13 @@ void GRenderer::Init()
 
     CubeMesh->SetShader(CubeMesh->HasTexCoords() ? Shaders[2] : Shaders[1]);
 
-    //CubeMesh->Rotate(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	CubeMesh->SetTranslation({0.0f, -1.0f, -3.0f});
 
     CubeMesh->BindBuffers();
 
     std::unique_ptr<GCubeMesh> LightCubeMesh = std::make_unique<GCubeMesh>(0.3f, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), nullptr);
 
-    LightCubeMesh->Translate(LightPosition);
+    LightCubeMesh->SetTranslation(LightPosition);
 
     LightCubeMesh->SetShader(Shaders[0]);
 
@@ -94,6 +95,8 @@ void GRenderer::Init()
 
 void GRenderer::Tick(const float& DeltaTime)
 {
+	Meshes[1]->RotateAroundPoint(DeltaTime, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f));
+
     for (std::unique_ptr<GMesh>& Mesh : Meshes)
     {
         Mesh->Tick(DeltaTime);
@@ -101,6 +104,13 @@ void GRenderer::Tick(const float& DeltaTime)
 
     for (std::shared_ptr<GShader>& Shader : Shaders)
     {
+		float Pos[3] =
+		{
+			Meshes[1]->GetPosition()[0],
+			Meshes[1]->GetPosition()[1],
+			Meshes[1]->GetPosition()[2]
+		};
+		Shader->BufferFloatUniformVector3("LightPosition", Pos);
         Shader->BufferProjectionViewMatrix(CameraPtr->GetProjectionViewMatrix());
     }
 

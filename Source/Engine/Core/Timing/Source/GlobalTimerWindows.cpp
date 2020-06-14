@@ -17,6 +17,8 @@ CGlobalTimer::CGlobalTimer()
 
 	QueryPerformanceCounter(&WindowsStart);
 	StartTimeCycles = WindowsStart.QuadPart;
+
+	LastFrameCycle = GetCurrentCycles();
 }
 
 unsigned long long CGlobalTimer::GetCurrentCycles() const

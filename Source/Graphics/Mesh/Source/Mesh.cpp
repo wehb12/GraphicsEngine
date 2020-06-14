@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 #include <cmath>
 #include <ctime>
@@ -73,6 +74,11 @@ void GMesh::Rotate(const float RotateAngle, const glm::vec3& RotationAxis)
 	*ModelMatrix = glm::rotate(*ModelMatrix, RotateAngle, RotationAxis);
 }
 
+void GMesh::RotateAroundPoint(const float RotateAngle, const glm::vec3& RotationAxis, const glm::vec3& Point)
+{
+	*ModelMatrix = glm::mat4_cast(glm::angleAxis(RotateAngle, RotationAxis)) * *ModelMatrix;
+}
+
 void GMesh::Scale(const float Scale)
 {
 	*ModelMatrix = glm::scale(*ModelMatrix, glm::vec3(Scale));
@@ -80,12 +86,29 @@ void GMesh::Scale(const float Scale)
 
 void GMesh::Translate(const glm::vec3& TranslationVector)
 {
+	*ModelMatrix = glm::translate(*ModelMatrix, TranslationVector);
+}
+
+void GMesh::SetTranslation(const glm::vec3& TranslationVector)
+{
 	const glm::vec3 InvScaleVec = { 1 / (*ModelMatrix)[0][0], 1 / (*ModelMatrix)[1][1], 1 / (*ModelMatrix)[2][2] };
 	*ModelMatrix = glm::scale(*ModelMatrix, InvScaleVec);
 
-	*ModelMatrix = glm::translate(*ModelMatrix, TranslationVector);
+	(*ModelMatrix)[3] = glm::vec4(TranslationVector, (*ModelMatrix)[3][3]);
 
 	*ModelMatrix = glm::scale(*ModelMatrix, glm::vec3(1 / InvScaleVec[0], 1 / InvScaleVec[1], 1 / InvScaleVec[2]));
+}
+
+const glm::vec3& GMesh::GetPosition() const
+{
+	glm::mat4 Modelcopy = *ModelMatrix;
+	glm::vec3 scale;
+	glm::quat rotation;
+	glm::vec3 translation;
+	glm::vec3 skew;
+	glm::vec4 perspective;
+	glm::decompose(Modelcopy, scale, rotation, translation, skew, perspective);
+	return translation;
 }
 
 void GMesh::AddColour(const glm::vec4& ColourVector)

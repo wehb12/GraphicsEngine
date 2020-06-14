@@ -35,12 +35,18 @@ public:
 	void Draw();
 
 	// Transform mesh methods
+	// Method that say 'Set' decompose the transform first
 	// Rotate by an angle in radians
 	void Rotate(const float RotateAngle, const glm::vec3& RotationAxis);
+	// TODO: at the minute it just rotates around origin
+	void RotateAroundPoint(const float RotateAngle, const glm::vec3& RotationAxis, const glm::vec3& Point);
 
 	void Scale(const float Scale);
 
 	void Translate(const glm::vec3& TranslationVector);
+	void SetTranslation(const glm::vec3& TranslationVector);
+
+	const glm::vec3& GetPosition() const;
 
 	// ----------------------
 
