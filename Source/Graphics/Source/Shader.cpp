@@ -61,6 +61,12 @@ void GShader::BufferFloatUniformMatrix4x4(const char* UniformName, const float* 
     glUniformMatrix4fv(glGetUniformLocation(*ShaderProgramPtr, UniformName), 1, GL_FALSE, UniformData);
 }
 
+void GShader::BufferFloatUniformVector3(const char* UniformName, const float* UniformData) const
+{
+	UseProgram();
+	glUniform3fv(glGetUniformLocation(*ShaderProgramPtr, UniformName), 1, UniformData);
+}
+
 void GShader::BufferFloatUniformVector4(const char* UniformName, const float* UniformData) const
 {
     UseProgram();

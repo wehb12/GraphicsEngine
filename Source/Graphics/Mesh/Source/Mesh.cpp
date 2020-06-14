@@ -80,7 +80,12 @@ void GMesh::Scale(const float Scale)
 
 void GMesh::Translate(const glm::vec3& TranslationVector)
 {
+	const glm::vec3 InvScaleVec = { 1 / (*ModelMatrix)[0][0], 1 / (*ModelMatrix)[1][1], 1 / (*ModelMatrix)[2][2] };
+	*ModelMatrix = glm::scale(*ModelMatrix, InvScaleVec);
+
 	*ModelMatrix = glm::translate(*ModelMatrix, TranslationVector);
+
+	*ModelMatrix = glm::scale(*ModelMatrix, glm::vec3(1 / InvScaleVec[0], 1 / InvScaleVec[1], 1 / InvScaleVec[2]));
 }
 
 void GMesh::AddColour(const glm::vec4& ColourVector)
@@ -134,6 +139,19 @@ void GMesh::AddColour(const float Colour[4])
 	};
 
 	Colours.push_back(ColourArray);
+}
+
+void GMesh::AddNormal(const float Normal[3])
+{
+	ASSERT(bIsEditable);
+
+	const std::array<const float, 3> NormalArray = {
+		Normal[0],
+		Normal[1],
+		Normal[2]
+	};
+
+	Normals.push_back(NormalArray);
 }
 
 void GMesh::AddTexCoord(const float TexCoord[2])
@@ -201,6 +219,13 @@ void GMesh::GenerateBuffers()
 		VertexBufferObjects[EVertexBuffer::ELEMENT_BUFFER] = std::unique_ptr<GraphicsMesh>(IndexBuffer);
 		glGenBuffers(1, (GLuint*)IndexBuffer);
 	}
+
+	if (Normals.size() != 0)
+	{
+		GraphicsMesh* NormalBuffer = new GraphicsMesh();
+		VertexBufferObjects[EVertexBuffer::NORMAL_BUFFER] = std::unique_ptr<GraphicsMesh>(NormalBuffer);
+		glGenBuffers(1, (GLuint*)NormalBuffer);
+	}
 }
 
 void GMesh::BindBuffer(void* Array, const unsigned int ArraySize, GraphicsMesh& BufferObject, unsigned int BufferType)
@@ -236,6 +261,12 @@ void GMesh::BindBuffers(const bool& bCanEdit)
 	if (Indices.size() != 0)
 	{
 		BindBuffer(const_cast<unsigned int*>(&Indices[0]), Indices.size() * sizeof(unsigned int), *VertexBufferObjects[EVertexBuffer::ELEMENT_BUFFER], GL_ELEMENT_ARRAY_BUFFER);
+	}
+
+	if (Normals.size() != 0)
+	{
+		BindBuffer(const_cast<float*>(&Normals[0][0]), Normals.size() * Normals[0].size() * sizeof(float), *VertexBufferObjects[EVertexBuffer::NORMAL_BUFFER], GL_ARRAY_BUFFER);
+		SetVertexAttributePointer(EVertexBuffer::NORMAL_BUFFER, Normals[0].size());
 	}
 }
 

@@ -30,7 +30,7 @@ public:
     }
 
     void BufferFloatUniformMatrix4x4(const char* UniformName, const float* UniformData) const;
-
+    void BufferFloatUniformVector3(const char* UniformName, const float* UniformData) const;
     void BufferFloatUniformVector4(const char* UniformName, const float* UniformData) const;
 
 private:

@@ -60,11 +60,14 @@ void GRenderer::Init()
 	Shaders.push_back(std::move(SimpleShader));
     Shaders.push_back(std::move(TexturedShader));
 
+	const glm::vec3 LightPosition = glm::vec3(1.5f, 2.0f, -1.5f);
+
     // TODO: Move this to a LightSource class
     for (std::shared_ptr<GShader>& Shader : Shaders)
     {
         const float LightColour[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-        Shader->BufferFloatUniformVector4("LightColour", LightColour);
+		Shader->BufferFloatUniformVector4("LightColour", LightColour);
+		Shader->BufferFloatUniformVector3("LightPosition", &LightPosition[0]);
     }
 
 	Shaders[1]->UseProgram();
@@ -73,13 +76,13 @@ void GRenderer::Init()
 
     CubeMesh->SetShader(CubeMesh->HasTexCoords() ? Shaders[2] : Shaders[1]);
 
-    CubeMesh->Rotate(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    //CubeMesh->Rotate(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
     CubeMesh->BindBuffers();
 
-    std::unique_ptr<GCubeMesh> LightCubeMesh = std::make_unique<GCubeMesh>(0.5f, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), nullptr);
+    std::unique_ptr<GCubeMesh> LightCubeMesh = std::make_unique<GCubeMesh>(0.3f, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), nullptr);
 
-    LightCubeMesh->Translate(glm::vec3(1.0f, 3.0f, -2.0f));
+    LightCubeMesh->Translate(LightPosition);
 
     LightCubeMesh->SetShader(Shaders[0]);
 

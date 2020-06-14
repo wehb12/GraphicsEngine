@@ -19,6 +19,7 @@ class GMesh
 	{
 		VERTEX_BUFFER = 0,
 		COLOUR_BUFFER,
+		NORMAL_BUFFER,
 		TEXCOORD_BUFFER,
 		ELEMENT_BUFFER,
 		MAX
@@ -50,6 +51,14 @@ public:
 		std::copy(VertexList.begin(), VertexList.end(), VertexArray);
 
 		AddVertex(VertexArray);
+	}
+
+	inline void AddNormal(std::initializer_list<float> NormalList)
+	{
+		float NormalArray[3];
+		std::copy(NormalList.begin(), NormalList.end(), NormalArray);
+
+		AddNormal(NormalArray);
 	}
 
 	inline void AddColour(std::initializer_list<float> ColourList)
@@ -113,6 +122,8 @@ public:
 	void AddVertex(const float Vertex[3], const float Colour[4]);
 
 	void AddColour(const float Colour[4]);
+
+	void AddNormal(const float Normal[3]);
 
 	void AddTexCoord(const float TexCoord[2]);
 
@@ -189,6 +200,7 @@ private:
 	std::vector<std::array<const float, 4>> Colours;
 	std::vector<std::array<const float, 2>> TexCoords;
 	std::vector<unsigned int> Indices;
+	std::vector<std::array<const float, 3>> Normals;
 
 	std::unique_ptr<GraphicsMesh> VertexArrayObject;
 	std::unique_ptr<GraphicsMesh> VertexBufferObjects[EVertexBuffer::MAX];
