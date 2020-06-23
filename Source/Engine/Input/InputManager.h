@@ -30,6 +30,12 @@ public:
 		BindDelegate(KeyToBindTo, (const KeyPressDelegate&)std::bind(DelegatorMethod, Delegator));
 	}
 
+	// Bind a delgate made from a lambda
+	inline void BindDelegate(const EInputKey& KeyToBindTo, void (DelegatorLambda)(void))
+	{
+		BindDelegate(KeyToBindTo, (const KeyPressDelegate&)std::bind(DelegatorLambda));
+	}
+
 	void BindDelegate(const EInputKey& KeyToBindTo, const KeyPressDelegate& Delegate)
 	{
 		KeyBindingsMap[KeyToBindTo].push_back(Delegate);

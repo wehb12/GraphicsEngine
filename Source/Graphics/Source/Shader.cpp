@@ -31,11 +31,10 @@ struct GraphicsShader
 
 GShader::GShader(const std::initializer_list<std::string>& ShaderList)
 {
-	std::vector<std::string> ShaderPaths;
 	ShaderPaths.insert(ShaderPaths.end(), ShaderList.begin(), ShaderList.end());
 
     DetermineShaderStageTypes(ShaderList);
-	const std::vector<std::string> ShaderSource = LoadShaders(ShaderPaths);
+	ShaderSource = LoadShaders(ShaderPaths);
 
     CompileShaders(ShaderSource);
 }
@@ -73,6 +72,12 @@ void GShader::BufferFloatUniformVector4(const char* UniformName, const float* Un
     glUniform4fv(glGetUniformLocation(*ShaderProgramPtr, UniformName), 1, UniformData);
 }
 
+void GShader::Recompile()
+{
+	ShaderSource = LoadShaders(ShaderPaths);
+	CompileShaders(ShaderSource);
+}
+
 void GShader::DetermineShaderStageTypes(const std::vector<std::string>& ShaderList)
 {
     // TODO: Make these checks more robust, maybe pass a flag into constructor to verify makeup of shader
@@ -106,16 +111,16 @@ void GShader::DetermineShaderStageTypes(const std::vector<std::string>& ShaderLi
 
 std::vector<std::string> GShader::LoadShaders(const std::vector<std::string>& ShaderPaths)
 {
-    std::vector<std::string> ShaderSource;
+    std::vector<std::string> NewShaderSource;
 	for (const std::string& ShaderPath : ShaderPaths)
 	{
 		std::ifstream ShaderFile(ShaderPath);
 
         ASSERT_FAIL(ShaderFile.is_open(), std::cout << "Shader file " << ShaderPath << " does not exist" << std::endl);
-        ShaderSource.push_back(std::string((std::istreambuf_iterator<char>(ShaderFile)), std::istreambuf_iterator<char>()));
+		NewShaderSource.push_back(std::string((std::istreambuf_iterator<char>(ShaderFile)), std::istreambuf_iterator<char>()));
 	}
 
-    return ShaderSource;
+    return NewShaderSource;
 }
 
 void GShader::CompileShaders(const std::vector<std::string>& ShaderSource)
@@ -145,6 +150,8 @@ bool GShader::CompileShader(const char* ShaderSource, GraphicsShader& Shader)
         char InfoLog[512] = { 0 };
         glGetShaderInfoLog(Shader, 512, NULL, InfoLog);
         std::cout << "Error: Shader compilation failed - " << InfoLog << std::endl;
+
+		ASSERT(Success);
     }
 
     return Success != 0;

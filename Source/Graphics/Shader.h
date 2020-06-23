@@ -33,6 +33,8 @@ public:
     void BufferFloatUniformVector3(const char* UniformName, const float* UniformData) const;
     void BufferFloatUniformVector4(const char* UniformName, const float* UniformData) const;
 
+	void Recompile();
+
 private:
     void DetermineShaderStageTypes(const std::vector<std::string>& ShaderList);
 
@@ -48,7 +50,8 @@ private:
     std::vector<unsigned int> ShaderStageTypes;
 
     std::vector<std::unique_ptr<GraphicsShader>> ShaderPtrs;
-    std::vector<std::string> ShaderSource;
+	std::vector<std::string> ShaderPaths;
+	std::vector<std::string> ShaderSource;
 
     std::unique_ptr<GraphicsShader> ShaderProgramPtr;
 };

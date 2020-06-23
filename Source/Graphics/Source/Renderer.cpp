@@ -8,6 +8,7 @@
 #include "Graphics/Window.h"
 #include "Common/DebugMacros.h"
 #include "Common/StringOperations.h"
+#include "Input/InputManager.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -57,6 +58,17 @@ void GRenderer::Init()
         }
     ));
 
+	IInputManager::Get()->BindDelegate(EInputKey::F1, [this]()
+		{
+			for (std::shared_ptr<GShader>& Shader : Shaders)
+			{
+				Shader->Recompile();
+				const float LightColour[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+				Shader->BufferFloatUniformVector4("LightColour", LightColour);
+			}
+		}
+	);
+
 	Shaders.push_back(std::move(LightSourceShader));
 	Shaders.push_back(std::move(SimpleShader));
     Shaders.push_back(std::move(TexturedShader));
@@ -104,13 +116,23 @@ void GRenderer::Tick(const float& DeltaTime)
 
     for (std::shared_ptr<GShader>& Shader : Shaders)
     {
-		float Pos[3] =
+		float LightPos[3] =
 		{
 			Meshes[1]->GetPosition()[0],
 			Meshes[1]->GetPosition()[1],
 			Meshes[1]->GetPosition()[2]
 		};
-		Shader->BufferFloatUniformVector3("LightPosition", Pos);
+		Shader->BufferFloatUniformVector3("LightPosition", LightPos);
+
+		const glm::vec3 CameraPosVector = CameraPtr->GetPosition();
+		float CameraPos[3] =
+		{
+			CameraPosVector[0],
+			CameraPosVector[1],
+			CameraPosVector[2]
+		};
+		Shader->BufferFloatUniformVector3("CameraPosition", CameraPos);
+
         Shader->BufferProjectionViewMatrix(CameraPtr->GetProjectionViewMatrix());
     }
 

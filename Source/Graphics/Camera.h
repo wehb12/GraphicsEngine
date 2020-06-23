@@ -29,6 +29,11 @@ public:
 		return ProjectionViewMatrix;
 	}
 
+	inline const glm::vec3& GetPosition() const
+	{
+		return *CameraPosition;
+	}
+
 private:
 	void RecalculateMatrices();
 

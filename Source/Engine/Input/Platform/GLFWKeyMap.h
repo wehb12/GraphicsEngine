@@ -82,7 +82,19 @@ inline static const std::map<unsigned short, EInputKey>& GetGLFWKeyMap()
 		{ GLFW_KEY_UP,				EInputKey::ARROW_UP			},
 		{ GLFW_KEY_RIGHT,			EInputKey::ARROW_RIGHT		},
 		{ GLFW_KEY_DOWN,			EInputKey::ARROW_DOWN		},
-		{ GLFW_KEY_LEFT,			EInputKey::ARROW_LEFT		}
+		{ GLFW_KEY_LEFT,			EInputKey::ARROW_LEFT		},
+		{ GLFW_KEY_F1,				EInputKey::F1				},
+		{ GLFW_KEY_F2,				EInputKey::F2				},
+		{ GLFW_KEY_F3,				EInputKey::F3				},
+		{ GLFW_KEY_F4,				EInputKey::F4				},
+		{ GLFW_KEY_F5,				EInputKey::F5				},
+		{ GLFW_KEY_F6,				EInputKey::F6				},
+		{ GLFW_KEY_F7,				EInputKey::F7				},
+		{ GLFW_KEY_F8,				EInputKey::F8				},
+		{ GLFW_KEY_F9,				EInputKey::F9				},
+		{ GLFW_KEY_F10,				EInputKey::F10				},
+		{ GLFW_KEY_F11,				EInputKey::F11				},
+		{ GLFW_KEY_F12,				EInputKey::F12				}
 	};
 
 	return GLFWKeyMap;
@@ -159,6 +171,18 @@ inline static const std::array<unsigned short, (size_t)EInputKey::MAX>& GetGLFWK
 		GLFW_KEY_RIGHT,
 		GLFW_KEY_DOWN,
 		GLFW_KEY_LEFT,
+		GLFW_KEY_F1,
+		GLFW_KEY_F2,
+		GLFW_KEY_F3,
+		GLFW_KEY_F4,
+		GLFW_KEY_F5,
+		GLFW_KEY_F6,
+		GLFW_KEY_F7,
+		GLFW_KEY_F8,
+		GLFW_KEY_F9,
+		GLFW_KEY_F10,
+		GLFW_KEY_F11,
+		GLFW_KEY_F12
 	};
 
 	return GLFWKeyArray;
