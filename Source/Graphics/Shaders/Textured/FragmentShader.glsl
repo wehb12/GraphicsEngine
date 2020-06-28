@@ -8,6 +8,15 @@ struct MaterialStruct
     float Shininess;
 };
 
+struct LightStruct
+{
+    vec3 Position;
+    
+    vec3 Ambient;
+    vec3 Diffuse;
+    vec3 Specular;
+};
+
 in vec4 VertexColour;
 in vec3 VertexNormal;
 in vec2 VertexTexCoord;
@@ -16,27 +25,24 @@ in vec3 FragmentPosition;
 out vec4 FragmentColour;
 
 uniform sampler2D Texture;
-uniform vec4 LightColour;
-uniform vec3 LightPosition;
 uniform vec3 CameraPosition;
 uniform MaterialStruct Material;
+uniform LightStruct Light;
 
 void main()
 {
-    float AmbientLightStrength = 0.1;
-    vec3 Ambient = vec3(AmbientLightStrength * LightColour) * Material.Ambient;
+    vec3 Ambient = Light.Ambient * Material.Ambient;
     
     vec3 Normal = normalize(VertexNormal);
-    vec3 LightDirection = normalize(LightPosition - FragmentPosition);
+    vec3 LightDirection = normalize(Light.Position - FragmentPosition);
     float DiffuseStrength = max(dot(Normal, LightDirection), 0.0);
-    vec3 Diffuse = vec3(DiffuseStrength * LightColour) * Material.Diffuse;
+    vec3 Diffuse = DiffuseStrength * Light.Diffuse * Material.Diffuse;
     
-    float SpecularStrength = 0.5;
     vec3 ViewDirection = normalize(CameraPosition - FragmentPosition);
     vec3 ReflectionDirection = reflect(-LightDirection, Normal);
     float Shininess = 32;
     float SpecularPower = pow(max(dot(ViewDirection, ReflectionDirection), 0.0), Material.Shininess);
-    vec3 Specular = vec3(SpecularStrength * SpecularPower * LightColour) * Material.Specular;
+    vec3 Specular = SpecularPower * Light.Diffuse * Material.Specular;
 
     vec4 TextureColour = texture(Texture, VertexTexCoord);
     FragmentColour = vec4((Ambient + Diffuse + Specular), 1.0) * TextureColour;

@@ -79,9 +79,13 @@ void GRenderer::Init()
     // TODO: Move this to a LightSource class Tick()
     for (std::shared_ptr<GShader>& Shader : Shaders)
     {
-        const float LightColour[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		Shader->BufferFloatUniformVector4("LightColour", LightColour);
-		Shader->BufferFloatUniformVector3("LightPosition", &LightPosition[0]);
+		const float LightAmbient[3] = { 0.2f, 0.2f, 0.2f };
+		const float LightDiffuse[3] = { 0.5f, 0.5f, 0.5f };
+		const float LightSpecular[3] = { 1.0f, 1.0f, 1.0f };
+		Shader->BufferFloatUniformVector3("Light.Ambient", LightAmbient);
+		Shader->BufferFloatUniformVector3("Light.Diffuse", LightDiffuse);
+		Shader->BufferFloatUniformVector3("Light.Specular", LightSpecular);
+		Shader->BufferFloatUniformVector3("Light.Position", &LightPosition[0]);
     }
 
 	Shaders[1]->UseProgram();
@@ -125,7 +129,7 @@ void GRenderer::Tick(const float& DeltaTime)
 			Meshes[1]->GetPosition()[1],
 			Meshes[1]->GetPosition()[2]
 		};
-		Shader->BufferFloatUniformVector3("LightPosition", LightPos);
+		Shader->BufferFloatUniformVector3("Light.Position", LightPos);
 
 		const glm::vec3 CameraPosVector = CameraPtr->GetPosition();
 		float CameraPos[3] =
