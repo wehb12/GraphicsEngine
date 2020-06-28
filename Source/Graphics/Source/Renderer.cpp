@@ -1,5 +1,6 @@
 #include "Graphics/Renderer.h"
 #include "Graphics/Camera.h"
+#include "Graphics/Mesh/MaterialExamples.h"
 #include "Graphics/Mesh/Mesh.h"
 #include "Graphics/Mesh/CubeMesh.h"
 #include "Graphics/Mesh/PlaneMesh.h"
@@ -90,6 +91,8 @@ void GRenderer::Init()
     CubeMesh->SetShader(CubeMesh->HasTexCoords() ? Shaders[2] : Shaders[1]);
 
 	CubeMesh->SetTranslation({0.0f, -1.0f, -3.0f});
+
+	CubeMesh->SetMaterial(MaterialExamples::Gold);
 
     CubeMesh->BindBuffers();
 

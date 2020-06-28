@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glm/fwd.hpp>
+#include <glm/glm.hpp>
 
 #include <algorithm>
 #include <array>
@@ -15,6 +15,7 @@ struct GraphicsMesh;
 
 class GMesh
 {
+private:
 	enum EVertexBuffer : unsigned int
 	{
 		VERTEX_BUFFER = 0,
@@ -23,6 +24,15 @@ class GMesh
 		TEXCOORD_BUFFER,
 		ELEMENT_BUFFER,
 		MAX
+	};
+
+public:
+	struct GMaterial
+	{
+		glm::vec3 Ambient;
+		glm::vec3 Diffuse;
+		glm::vec3 Specular;
+		float Shininess;
 	};
 
 public:
@@ -168,8 +178,6 @@ public:
 		BindBuffers(bIsEditable);
 	}
 
-	void BufferModelMatrixToShader(const std::shared_ptr<glm::mat4> ModelMatrix);
-
 	void BindVertexArray();
 
 	inline unsigned int GetDrawCount() const
@@ -187,6 +195,11 @@ public:
 		return TexCoords.size();
 	}
 
+	inline void SetMaterial(const GMaterial InMaterial)
+	{
+		Material = InMaterial;
+	}
+
 private:
 	void GenerateVertexArray();
 
@@ -197,6 +210,10 @@ private:
 	void SetVertexAttributePointer(const GMesh::EVertexBuffer& VertexBufferType, const unsigned int& VectorSize);
 		
 	void BindBuffers(const bool& bCanEdit);
+
+	void BufferModelMatrixToShader();
+
+	void BufferMaterialToShader();
 
 private:
 	// False if mesh loaded from file
@@ -215,4 +232,6 @@ private:
 	std::shared_ptr<GShader> Shader;
 
 	std::shared_ptr<glm::mat4> ModelMatrix;
+
+	GMaterial Material;
 };

@@ -53,16 +53,12 @@ GMesh::~GMesh()
 
 void GMesh::Tick(const float& DeltaTime)
 {
-	// TODO: move this to a timer class
-	const double StartTime = glfwGetTime();
-
-	const float Scale = std::sin(StartTime) + 1;
-	//*ModelMatrix = glm::scale(glm::identity<glm::mat4>(), glm::vec3(Scale, Scale, Scale));
 }
 
 void GMesh::Draw()
 {
-	BufferModelMatrixToShader(ModelMatrix);
+	BufferModelMatrixToShader();
+	BufferMaterialToShader();
 	BindVertexArray();
 	Indices.size()
 		? glDrawElements(GL_TRIANGLES, GetDrawCount(), GL_UNSIGNED_INT, 0)
@@ -202,11 +198,21 @@ void GMesh::GenerateVertexArray()
 	glGenVertexArrays(1, (GLuint*)VertexArrayObject.get());
 }
 
-void GMesh::BufferModelMatrixToShader(const std::shared_ptr<glm::mat4> ModelMatrix)
+void GMesh::BufferModelMatrixToShader()
 {
 	ASSERT(Shader);
 	Shader->UseProgram();
 	Shader->BufferModelMatrix(ModelMatrix);
+}
+
+void GMesh::BufferMaterialToShader()
+{
+	ASSERT(Shader);
+	Shader->UseProgram();
+	Shader->BufferFloatUniformVector3("Material.Ambient", &Material.Ambient[0]);
+	Shader->BufferFloatUniformVector3("Material.Diffuse", &Material.Diffuse[0]);
+	Shader->BufferFloatUniformVector3("Material.Specular", &Material.Specular[0]);
+	Shader->BufferFloatUniform("Material.Shininess", Material.Shininess);
 }
 
 void GMesh::BindVertexArray()
