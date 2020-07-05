@@ -8,6 +8,8 @@
 #include <glm/glm.hpp>
 #include <stb_image/stb_image.h>
 
+#include <fstream>
+
 struct GraphicsTexture
 {
 	GraphicsTexture(const GLuint& InTexture, const unsigned short InTextureUnit)
@@ -27,10 +29,10 @@ struct GraphicsTexture
 
 GTexture::GTexture(const std::string& TexturePath)
 {
-	GenerateTexture(ETexture::DIFFUSE);
-	BindTexture(Textures[ETexture::DIFFUSE]);
-	SetTextureParameters();
-	LoadTexture(TexturePath);
+	GetTexturePaths(TexturePath);
+	GenerateTextures();
+	BindTextures();
+	LoadTextures();
 }
 
 GTexture::~GTexture()
@@ -40,21 +42,30 @@ GTexture::~GTexture()
 void GTexture::BufferToShader(std::shared_ptr<GShader> Shader)
 {
 	Shader->BufferIntUniform("Material.Diffuse", 0);
-	BindTexture(Textures[ETexture::DIFFUSE]);
+	Shader->BufferIntUniform("Material.Specular", 1);
+	BindTextures();
 }
 
-void GTexture::GenerateTexture(const ETexture& TextureType)
+void GTexture::GenerateTextures()
 {
-	GLuint Texture;
-	glGenTextures(1, &Texture);
+	for (unsigned int TextureType = ETexture::DIFFUSE; TextureType < ETexture::MAX; ++TextureType)
+	{
+		GLuint Texture;
+		glGenTextures(1, &Texture);
 
-	Textures[TextureType] = std::make_unique<GraphicsTexture>(Texture, GL_TEXTURE0 + TextureType);
+		Textures[TextureType] = std::make_unique<GraphicsTexture>(Texture, GL_TEXTURE0 + TextureType);
+	}
 }
 
-void GTexture::BindTexture(std::unique_ptr<GraphicsTexture>& Texture)
+void GTexture::BindTextures()
 {
-	glActiveTexture(Texture->GLTextureUnit);
-	glBindTexture(GL_TEXTURE_2D, Texture->GLTexture);
+	for (std::unique_ptr<GraphicsTexture>& Texture : Textures)
+	{
+		glActiveTexture(Texture->GLTextureUnit);
+		glBindTexture(GL_TEXTURE_2D, Texture->GLTexture);
+
+		SetTextureParameters();
+	}
 }
 
 void GTexture::SetTextureParameters()
@@ -65,28 +76,62 @@ void GTexture::SetTextureParameters()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
-bool GTexture::LoadTexture(const std::string& TexturePath)
+bool GTexture::LoadTextures()
 {
-	int Width;
-	int Height;
-	int Channels;
-	unsigned char* TextureData = stbi_load(TexturePath.c_str(), &Width, &Height, &Channels, 0);
-
-	const char* FailureReason = stbi_failure_reason();
-	ASSERT(TextureData);
-
-	std::string FileType = TexturePath.substr(TexturePath.rfind('.', std::string::npos));
-
-	unsigned short ColourType = GL_RGB;
-	if (CompareString(FileType, "png"))
+	for (unsigned int TextureType = ETexture::DIFFUSE; TextureType < ETexture::MAX; ++TextureType)
 	{
-		ColourType = GL_RGBA;
+		const std::string SubTexturePath = TexturePaths[TextureType];
+
+		int Width;
+		int Height;
+		int Channels;
+		unsigned char* TextureData = stbi_load(SubTexturePath.c_str(), &Width, &Height, &Channels, 0);
+
+		const char* FailureReason = stbi_failure_reason();
+		ASSERT(TextureData);
+
+		std::string FileType = SubTexturePath.substr(SubTexturePath.rfind('.', std::string::npos));
+
+		unsigned short ColourType = GL_RGB;
+		if (CompareString(FileType, "png"))
+		{
+			ColourType = GL_RGBA;
+		}
+
+		glActiveTexture(Textures[TextureType]->GLTextureUnit);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, ColourType, GL_UNSIGNED_BYTE, TextureData);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		stbi_image_free(TextureData);
 	}
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, ColourType, GL_UNSIGNED_BYTE, TextureData);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	stbi_image_free(TextureData);
-
 	return true;
+}
+
+void GTexture::GetTexturePaths(const std::string& TexturePath)
+{
+	for (unsigned int TextureType = ETexture::DIFFUSE; TextureType < ETexture::MAX; ++TextureType)
+	{
+		const std::string SubTexturePath = TexturePath + "_" + TextureAppendices[TextureType];
+		std::ifstream TextureFile;
+		TextureFile.open(SubTexturePath + ".jpg");
+		if (TextureFile)
+		{
+			TexturePaths[TextureType] = SubTexturePath + ".jpg";
+		}
+		else
+		{
+			TextureFile.open(SubTexturePath + ".png");
+			if (TextureFile)
+			{
+				TexturePaths[TextureType] = SubTexturePath + ".png";
+			}
+			else
+			{
+				// TODO: No texture found - handle this
+			}
+		}
+
+		TextureFile.close();
+	}
 }

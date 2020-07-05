@@ -3,7 +3,8 @@
 struct MaterialStruct
 {
     sampler2D Diffuse;
-    vec3 Specular;
+    sampler2D Specular;
+
     float Shininess;
 };
 
@@ -42,7 +43,8 @@ void main()
     vec3 ReflectionDirection = reflect(-LightDirection, Normal);
     float Shininess = 32;
     float SpecularPower = pow(max(dot(ViewDirection, ReflectionDirection), 0.0), Material.Shininess);
-    vec3 Specular = SpecularPower * Light.Diffuse * Material.Specular;
+    vec4 SpecularTextureColour = texture(Material.Specular, VertexTexCoord);
+    vec3 Specular = SpecularPower * Light.Diffuse * vec3(SpecularTextureColour);
 
     FragmentColour = vec4((Ambient + Diffuse + Specular), DiffuseTextureColour.a);
 }

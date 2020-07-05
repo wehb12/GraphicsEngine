@@ -12,7 +12,14 @@ class GTexture
 	enum ETexture : unsigned char
 	{
 		DIFFUSE = 0,
+		SPECULAR = 1,
 		MAX
+	};
+
+	std::array<std::string, ETexture::MAX> TextureAppendices =
+	{
+		"Diffuse",
+		"Specular"
 	};
 
 public:
@@ -23,16 +30,20 @@ public:
 	void BufferToShader(std::shared_ptr<GShader> Shader);
 
 private:
-	void GenerateTexture(const ETexture& TextureType);
+	void GenerateTextures();
 
-	void BindTexture(std::unique_ptr<GraphicsTexture>& Texture);
+	void BindTextures();
 
 	// Sets parameters for currently bound texture unit
 	void SetTextureParameters();
 
 	// Load texture from disc and buffer to graphics card
-	bool LoadTexture(const std::string& TexturePath);
+	bool LoadTextures();
+
+	// Finds all similarly named textures in the path and returns the paths
+	void GetTexturePaths(const std::string& TexturePath);
 
 private:
 	std::array<std::unique_ptr<GraphicsTexture>, ETexture::MAX> Textures;
+	std::array<std::string, ETexture::MAX> TexturePaths;
 };

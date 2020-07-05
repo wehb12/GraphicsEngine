@@ -101,7 +101,7 @@ void GRenderer::Init()
 	std::unique_ptr<GCubeMesh> CubeMesh = std::make_unique<GCubeMesh>(2.0f, glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
 
     CubeMesh->SetShader(CubeMesh->HasTexCoords() ? Shaders[2] : Shaders[1]);
-	CubeMesh->SetTexture(TEXTURE_PATH("WoodGate/WoodGate_Diffuse.jpg"));
+	CubeMesh->SetTexture(TEXTURE_PATH("WoodGate/WoodGate"));
 
 	CubeMesh->SetTranslation({0.0f, -1.0f, -3.0f});
 
