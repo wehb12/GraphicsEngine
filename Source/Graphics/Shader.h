@@ -34,6 +34,8 @@ public:
 	void BufferFloatUniformVector3(const char* UniformName, const float* UniformData) const;
     void BufferFloatUniformVector4(const char* UniformName, const float* UniformData) const;
 
+	void BufferIntUniform(const char* UniformName, const int& UniformData) const;
+
 	void Recompile();
 
 private:

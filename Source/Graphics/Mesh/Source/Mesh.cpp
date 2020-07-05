@@ -209,8 +209,15 @@ void GMesh::BufferMaterialToShader()
 {
 	ASSERT(Shader);
 	Shader->UseProgram();
-	Shader->BufferFloatUniformVector3("Material.Ambient", &Material.Ambient[0]);
-	Shader->BufferFloatUniformVector3("Material.Diffuse", &Material.Diffuse[0]);
+	if (Texture)
+	{
+		Texture->BufferToShader(Shader);
+	}
+	else
+	{
+		Shader->BufferFloatUniformVector3("Material.Ambient", &Material.Ambient[0]);
+		Shader->BufferFloatUniformVector3("Material.Diffuse", &Material.Diffuse[0]);
+	}
 	Shader->BufferFloatUniformVector3("Material.Specular", &Material.Specular[0]);
 	Shader->BufferFloatUniform("Material.Shininess", Material.Shininess);
 }

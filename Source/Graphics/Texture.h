@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 
+class GShader;
 struct GraphicsTexture;
 
 class GTexture
@@ -18,6 +19,8 @@ public:
 	GTexture(const std::string& TexturePath);
 
 	~GTexture();
+
+	void BufferToShader(std::shared_ptr<GShader> Shader);
 
 private:
 	void GenerateTexture(const ETexture& TextureType);

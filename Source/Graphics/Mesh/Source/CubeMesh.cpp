@@ -3,16 +3,24 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-GCubeMesh::GCubeMesh(const float InSize, const glm::vec4& InColour, const std::shared_ptr<GTexture> InTexture)
+GCubeMesh::GCubeMesh(const float InSize, const glm::vec4& InColour)
 {
 	// Front face
 	AddVertex({ -0.5f, -0.5f, 0.5f }); //0
 	AddVertex({ -0.5f, 0.5f, 0.5f }); //1
 	AddVertex({ 0.5f, -0.5f, 0.5f }); //3
 
-    AddVertex({ -0.5f, 0.5f, 0.5f }); //1
+	AddVertex({ -0.5f, 0.5f, 0.5f }); //1
 	AddVertex({ 0.5f, 0.5f, 0.5f }); //2
 	AddVertex({ 0.5f, -0.5f, 0.5f }); //3
+
+	AddTexCoord({ -0.5f, -0.5f }); //0
+	AddTexCoord({ -0.5f, 0.5f }); //1
+	AddTexCoord({ 0.5f, -0.5f }); //3
+
+	AddTexCoord({ -0.5f, 0.5f }); //1
+	AddTexCoord({ 0.5f, 0.5f }); //2
+	AddTexCoord({ 0.5f, -0.5f }); //3
 
 	for (int i = 0; i < 6; ++i)
 	{
@@ -28,6 +36,14 @@ GCubeMesh::GCubeMesh(const float InSize, const glm::vec4& InColour, const std::s
 	AddVertex({ -0.5f, 0.5f, 0.5f }); //1
 	AddVertex({ -0.5f, -0.5f, 0.5f }); //0
 
+	AddTexCoord({ -0.5f, -0.5f }); //0
+	AddTexCoord({ -0.5f, 0.5f }); //1
+	AddTexCoord({ 0.5f, -0.5f }); //3
+
+	AddTexCoord({ -0.5f, 0.5f }); //1
+	AddTexCoord({ 0.5f, 0.5f }); //2
+	AddTexCoord({ 0.5f, -0.5f }); //3
+
 	for (int i = 0; i < 6; ++i)
 	{
 		AddNormal({ -1.0f, 0.0f, 0.0f });
@@ -42,12 +58,20 @@ GCubeMesh::GCubeMesh(const float InSize, const glm::vec4& InColour, const std::s
 	AddVertex({ 0.5f, 0.5f, 0.5f }); //2
 	AddVertex({ -0.5f, 0.5f, 0.5f }); //1
 
+	AddTexCoord({ -0.5f, -0.5f }); //0
+	AddTexCoord({ -0.5f, 0.5f }); //1
+	AddTexCoord({ 0.5f, -0.5f }); //3
+
+	AddTexCoord({ -0.5f, 0.5f }); //1
+	AddTexCoord({ 0.5f, 0.5f }); //2
+	AddTexCoord({ 0.5f, -0.5f }); //3
+
 	for (int i = 0; i < 6; ++i)
 	{
 		AddNormal({ 0.0f, 1.0f, 0.0f });
 	}
 
-    // Right face
+	// Right face
 	AddVertex({ 0.5f, -0.5f, 0.5f }); //3
 	AddVertex({ 0.5f, 0.5f, 0.5f }); //2
 	AddVertex({ 0.5f, -0.5f, -0.5f }); //7
@@ -55,6 +79,14 @@ GCubeMesh::GCubeMesh(const float InSize, const glm::vec4& InColour, const std::s
 	AddVertex({ 0.5f, 0.5f, 0.5f }); //2
 	AddVertex({ 0.5f, 0.5f, -0.5f }); //6
 	AddVertex({ 0.5f, -0.5f, -0.5f }); //7
+
+	AddTexCoord({ -0.5f, -0.5f }); //0
+	AddTexCoord({ -0.5f, 0.5f }); //1
+	AddTexCoord({ 0.5f, -0.5f }); //3
+
+	AddTexCoord({ -0.5f, 0.5f }); //1
+	AddTexCoord({ 0.5f, 0.5f }); //2
+	AddTexCoord({ 0.5f, -0.5f }); //3
 
 	for (int i = 0; i < 6; ++i)
 	{
@@ -70,6 +102,14 @@ GCubeMesh::GCubeMesh(const float InSize, const glm::vec4& InColour, const std::s
 	AddVertex({ -0.5f, 0.5f, -0.5f }); //5
 	AddVertex({ -0.5f, -0.5f, -0.5f }); //4
 
+	AddTexCoord({ 0.5f, -0.5f }); //7
+	AddTexCoord({ 0.5f, 0.5f }); //6
+	AddTexCoord({ -0.5f, -0.5f }); //4
+
+	AddTexCoord({ 0.5f, 0.5f }); //6
+	AddTexCoord({ -0.5f, 0.5f }); //5
+	AddTexCoord({ -0.5f, -0.5f }); //4
+
 	for (int i = 0; i < 6; ++i)
 	{
 		AddNormal({ 0.0f, 0.0f, -1.0f });
@@ -84,6 +124,14 @@ GCubeMesh::GCubeMesh(const float InSize, const glm::vec4& InColour, const std::s
 	AddVertex({ 0.5f, -0.5f, 0.5f }); //3
 	AddVertex({ 0.5f, -0.5f, -0.5f }); //7
 
+	AddTexCoord({ -0.5f, -0.5f }); //0
+	AddTexCoord({ -0.5f, 0.5f }); //1
+	AddTexCoord({ 0.5f, -0.5f }); //3
+
+	AddTexCoord({ -0.5f, 0.5f }); //1
+	AddTexCoord({ 0.5f, 0.5f }); //2
+	AddTexCoord({ 0.5f, -0.5f }); //3
+
 	for (int i = 0; i < 6; ++i)
 	{
 		AddNormal({ 0.0f, -1.0f, 0.0f });
@@ -94,5 +142,5 @@ GCubeMesh::GCubeMesh(const float InSize, const glm::vec4& InColour, const std::s
 		AddColour(InColour);
 	}
 
-    Scale(InSize);
+	Scale(InSize);
 }

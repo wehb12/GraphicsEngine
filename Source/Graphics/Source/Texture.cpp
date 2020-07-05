@@ -1,4 +1,6 @@
 #include "Graphics/Texture.h"
+#include "Graphics/Shader.h"
+#include "Common/DebugMacros.h"
 #include "Common/StringOperations.h"
 
 #include <glad/glad.h>
@@ -35,6 +37,12 @@ GTexture::~GTexture()
 {
 }
 
+void GTexture::BufferToShader(std::shared_ptr<GShader> Shader)
+{
+	Shader->BufferIntUniform("Material.Diffuse", 0);
+	BindTexture(Textures[ETexture::DIFFUSE]);
+}
+
 void GTexture::GenerateTexture(const ETexture& TextureType)
 {
 	GLuint Texture;
@@ -63,6 +71,9 @@ bool GTexture::LoadTexture(const std::string& TexturePath)
 	int Height;
 	int Channels;
 	unsigned char* TextureData = stbi_load(TexturePath.c_str(), &Width, &Height, &Channels, 0);
+
+	const char* FailureReason = stbi_failure_reason();
+	ASSERT(TextureData);
 
 	std::string FileType = TexturePath.substr(TexturePath.rfind('.', std::string::npos));
 

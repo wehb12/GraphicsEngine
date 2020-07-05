@@ -78,6 +78,12 @@ void GShader::BufferFloatUniformVector4(const char* UniformName, const float* Un
     glUniform4fv(glGetUniformLocation(*ShaderProgramPtr, UniformName), 1, UniformData);
 }
 
+void GShader::BufferIntUniform(const char* UniformName, const int& UniformData) const
+{
+	UseProgram();
+	glUniform1i(glGetUniformLocation(*ShaderProgramPtr, UniformName), UniformData);
+}
+
 void GShader::Recompile()
 {
 	ShaderSource = LoadShaders(ShaderPaths);

@@ -61,11 +61,20 @@ void GRenderer::Init()
 
 	IInputManager::Get()->BindDelegate(EInputKey::F1, [this]()
 		{
+			const glm::vec3 LightPosition = glm::vec3(1.5f, 1.0f, -4.5f);
+			const float LightAmbient[3] = { 0.2f, 0.2f, 0.2f };
+			const float LightDiffuse[3] = { 0.5f, 0.5f, 0.5f };
+			const float LightSpecular[3] = { 1.0f, 1.0f, 1.0f };
+
 			for (std::shared_ptr<GShader>& Shader : Shaders)
 			{
 				Shader->Recompile();
-				const float LightColour[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-				Shader->BufferFloatUniformVector4("LightColour", LightColour);
+
+				// TODO: Move this to a LightSource class Tick()
+				Shader->BufferFloatUniformVector3("Light.Ambient", LightAmbient);
+				Shader->BufferFloatUniformVector3("Light.Diffuse", LightDiffuse);
+				Shader->BufferFloatUniformVector3("Light.Specular", LightSpecular);
+				Shader->BufferFloatUniformVector3("Light.Position", &LightPosition[0]);
 			}
 		}
 	);
@@ -75,24 +84,24 @@ void GRenderer::Init()
     Shaders.push_back(std::move(TexturedShader));
 
 	const glm::vec3 LightPosition = glm::vec3(1.5f, 1.0f, -4.5f);
+	const float LightAmbient[3] = { 0.2f, 0.2f, 0.2f };
+	const float LightDiffuse[3] = { 0.5f, 0.5f, 0.5f };
+	const float LightSpecular[3] = { 1.0f, 1.0f, 1.0f };
 
     // TODO: Move this to a LightSource class Tick()
     for (std::shared_ptr<GShader>& Shader : Shaders)
     {
-		const float LightAmbient[3] = { 0.2f, 0.2f, 0.2f };
-		const float LightDiffuse[3] = { 0.5f, 0.5f, 0.5f };
-		const float LightSpecular[3] = { 1.0f, 1.0f, 1.0f };
 		Shader->BufferFloatUniformVector3("Light.Ambient", LightAmbient);
 		Shader->BufferFloatUniformVector3("Light.Diffuse", LightDiffuse);
 		Shader->BufferFloatUniformVector3("Light.Specular", LightSpecular);
 		Shader->BufferFloatUniformVector3("Light.Position", &LightPosition[0]);
     }
 
-	Shaders[1]->UseProgram();
-	std::shared_ptr<GTexture> FunkySquaresTexture = std::make_shared<GTexture>(TEXTURE_PATH("funky_squares.jpg"));
-	std::unique_ptr<GCubeMesh> CubeMesh = std::make_unique<GCubeMesh>(2.0f, glm::vec4(1.0f, 0.5f, 0.0f, 1.0f)/*, FunkySquaresTexture*/);
+	Shaders[2]->UseProgram();
+	std::unique_ptr<GCubeMesh> CubeMesh = std::make_unique<GCubeMesh>(2.0f, glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
 
     CubeMesh->SetShader(CubeMesh->HasTexCoords() ? Shaders[2] : Shaders[1]);
+	CubeMesh->SetTexture(TEXTURE_PATH("WoodGate/WoodGate_Diffuse.jpg"));
 
 	CubeMesh->SetTranslation({0.0f, -1.0f, -3.0f});
 
@@ -100,7 +109,7 @@ void GRenderer::Init()
 
     CubeMesh->BindBuffers();
 
-    std::unique_ptr<GCubeMesh> LightCubeMesh = std::make_unique<GCubeMesh>(0.3f, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), nullptr);
+    std::unique_ptr<GCubeMesh> LightCubeMesh = std::make_unique<GCubeMesh>(0.3f, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
     LightCubeMesh->SetTranslation(LightPosition);
 
