@@ -173,6 +173,19 @@ void GMesh::AddNormal(const float Normal[3])
 	Normals.push_back(NormalArray);
 }
 
+void GMesh::AddTangent(const float Tangent[3])
+{
+	ASSERT(bIsEditable);
+
+	const std::array<const float, 3> TangentArray = {
+		Tangent[0],
+		Tangent[1],
+		Tangent[2]
+	};
+
+	Tangents.push_back(TangentArray);
+}
+
 void GMesh::AddTexCoord(const float TexCoord[2])
 {
 	ASSERT(bIsEditable);
@@ -262,6 +275,13 @@ void GMesh::GenerateBuffers()
 		VertexBufferObjects[EVertexBuffer::NORMAL_BUFFER] = std::unique_ptr<GraphicsMesh>(NormalBuffer);
 		glGenBuffers(1, (GLuint*)NormalBuffer);
 	}
+
+	if (Tangents.size() != 0)
+	{
+		GraphicsMesh* TangentBuffer = new GraphicsMesh();
+		VertexBufferObjects[EVertexBuffer::TANGENT_BUFFER] = std::unique_ptr<GraphicsMesh>(TangentBuffer);
+		glGenBuffers(1, (GLuint*)TangentBuffer);
+	}
 }
 
 void GMesh::BindBuffer(void* Array, const unsigned int ArraySize, GraphicsMesh& BufferObject, unsigned int BufferType)
@@ -303,6 +323,12 @@ void GMesh::BindBuffers(const bool& bCanEdit)
 	{
 		BindBuffer(const_cast<float*>(&Normals[0][0]), Normals.size() * Normals[0].size() * sizeof(float), *VertexBufferObjects[EVertexBuffer::NORMAL_BUFFER], GL_ARRAY_BUFFER);
 		SetVertexAttributePointer(EVertexBuffer::NORMAL_BUFFER, Normals[0].size());
+	}
+
+	if (Tangents.size() != 0)
+	{
+		BindBuffer(const_cast<float*>(&Tangents[0][0]), Tangents.size() * Tangents[0].size() * sizeof(float), *VertexBufferObjects[EVertexBuffer::TANGENT_BUFFER], GL_ARRAY_BUFFER);
+		SetVertexAttributePointer(EVertexBuffer::TANGENT_BUFFER, Tangents[0].size());
 	}
 }
 

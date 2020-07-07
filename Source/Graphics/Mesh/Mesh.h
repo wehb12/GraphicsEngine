@@ -21,6 +21,7 @@ private:
 		VERTEX_BUFFER = 0,
 		COLOUR_BUFFER,
 		NORMAL_BUFFER,
+		TANGENT_BUFFER,
 		TEXCOORD_BUFFER,
 		ELEMENT_BUFFER,
 		MAX
@@ -75,6 +76,14 @@ public:
 		std::copy(NormalList.begin(), NormalList.end(), NormalArray);
 
 		AddNormal(NormalArray);
+	}
+
+	inline void AddTangent(std::initializer_list<float> TangentList)
+	{
+		float TangentArray[3];
+		std::copy(TangentList.begin(), TangentList.end(), TangentArray);
+
+		AddTangent(TangentArray);
 	}
 
 	inline void AddColour(std::initializer_list<float> ColourList)
@@ -140,6 +149,8 @@ public:
 	void AddColour(const float Colour[4]);
 
 	void AddNormal(const float Normal[3]);
+
+	void AddTangent(const float Tangent[3]);
 
 	void AddTexCoord(const float TexCoord[2]);
 
@@ -224,6 +235,7 @@ private:
 	std::vector<std::array<const float, 2>> TexCoords;
 	std::vector<unsigned int> Indices;
 	std::vector<std::array<const float, 3>> Normals;
+	std::vector<std::array<const float, 3>> Tangents;
 
 	std::unique_ptr<GraphicsMesh> VertexArrayObject;
 	std::unique_ptr<GraphicsMesh> VertexBufferObjects[EVertexBuffer::MAX];

@@ -43,6 +43,7 @@ void GTexture::BufferToShader(std::shared_ptr<GShader> Shader)
 {
 	Shader->BufferIntUniform("Material.Diffuse", 0);
 	Shader->BufferIntUniform("Material.Specular", 1);
+	Shader->BufferIntUniform("Material.Normal", 2);
 	BindTextures();
 }
 

@@ -13,13 +13,15 @@ class GTexture
 	{
 		DIFFUSE = 0,
 		SPECULAR = 1,
+		NORMAL = 2,
 		MAX
 	};
 
 	std::array<std::string, ETexture::MAX> TextureAppendices =
 	{
 		"Diffuse",
-		"Specular"
+		"Specular",
+		"Normal"
 	};
 
 public:
