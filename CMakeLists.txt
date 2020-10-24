@@ -6,10 +6,27 @@ FILE(GLOB_RECURSE ENGINE_SOURCES
     "Source/*.cpp"
 )
 
+LIST(FILTER ENGINE_SOURCES EXCLUDE REGEX
+    "Source/ThirdParty/.*"
+)
+
 # Game header files
 FILE(GLOB_RECURSE ENGINE_HEADERS
     "Source/*.h"
 )
+
+LIST(FILTER ENGINE_HEADERS EXCLUDE REGEX
+    "Source/ThirdParty/.*"
+)
+
+# Add stb_image
+LIST(APPEND ENGINE_SOURCES
+    "Source/ThirdParty/Graphics/stb_image/stb_image.cpp"
+)
+LIST(APPEND ENGINE_HEADERS
+    "Source/ThirdParty/Graphics/stb_image/stb_image.h"
+)
+
 
 # Source grouping for Visual Studio and Xcode
 # CMake < 3.8 doesn't support the tree feature, Android Studio's CMake version is older
@@ -27,7 +44,6 @@ ADD_EXECUTABLE(WillEngine WIN32 ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC
     "Source/"
     "Source/Engine/"
-    "Source/ThirdParty/Graphics/"
 )
 
 TARGET_COMPILE_DEFINITIONS(WillEngine PRIVATE SHADER_DIR="${CMAKE_SOURCE_DIR}/Source/Graphics/Shaders/")
@@ -51,6 +67,9 @@ MESSAGE(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
 FIND_PACKAGE(GLFW3 REQUIRED)
 MESSAGE(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
 
+FIND_PACKAGE(Assimp REQUIRED)
+MESSAGE(STATUS "Found Assimp in ${ASSIMP_INCLUDE_DIR}")
+
 # GLAD
 ADD_LIBRARY(GLAD "Source/ThirdParty/Graphics/glad/src/glad.c")
 
@@ -60,6 +79,8 @@ INCLUDE_DIRECTORIES(
     "${CMAKE_SOURCE_DIR}/Source/ThirdParty/Graphics/glad/include"
     "${CMAKE_SOURCE_DIR}/Source/ThirdParty/Graphics/glfw-3.3.2/include"
     "${CMAKE_SOURCE_DIR}/Source/ThirdParty/Graphics/glm-0.9.9.8"
+    "${CMAKE_SOURCE_DIR}/Source/ThirdParty/Graphics/assimp-5.0.1/include"
+    "${CMAKE_SOURCE_DIR}/Source/ThirdParty/Graphics"
 )
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${LIBS})

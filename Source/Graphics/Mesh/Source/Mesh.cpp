@@ -9,6 +9,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 
+#include <assimp/mesh.h>
+
 #include <cmath>
 #include <ctime>
 
@@ -45,6 +47,8 @@ GMesh::GMesh(const std::string& MeshName)
 	{
 		bIsEditable = true;
 	}
+
+	aiMesh AssimpMesh;
 }
 
 GMesh::~GMesh()

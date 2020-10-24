@@ -8,14 +8,14 @@ FIND_PATH( ASSIMP_INCLUDE_DIR assimp/mesh.h
 	/usr/include
 	/usr/local/include
 	/opt/local/include
-	"${CMAKE_SOURCE_DIR}/include"
+	"${CMAKE_SOURCE_DIR}/Source/ThirdParty/Graphics/assimp-5.0.1/include"
 )
 FIND_LIBRARY( ASSIMP_LIBRARY assimp
 	/usr/lib64
 	/usr/lib
 	/usr/local/lib
 	/opt/local/lib
-	"${CMAKE_SOURCE_DIR}/lib"
+	"${CMAKE_SOURCE_DIR}/Source/ThirdParty/Graphics/assimp-5.0.1/lib"
 )
 IF(ASSIMP_INCLUDE_DIR AND ASSIMP_LIBRARY)
 	SET( ASSIMP_FOUND TRUE )
