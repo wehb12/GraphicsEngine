@@ -9,11 +9,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 
-#include <assimp/mesh.h>
-
-#include <cmath>
-#include <ctime>
-
 struct GraphicsMesh
 {
 	GraphicsMesh()
@@ -41,14 +36,8 @@ GMesh::GMesh(const std::string& MeshName)
 	{
 		// Load mesh from file
 
-		BindBuffers(true);
+		BindBuffers();
 	}
-	else
-	{
-		bIsEditable = true;
-	}
-
-	aiMesh AssimpMesh;
 }
 
 GMesh::~GMesh()
@@ -99,7 +88,7 @@ void GMesh::SetTranslation(const glm::vec3& TranslationVector)
 	*ModelMatrix = glm::scale(*ModelMatrix, glm::vec3(1 / InvScaleVec[0], 1 / InvScaleVec[1], 1 / InvScaleVec[2]));
 }
 
-const glm::vec3& GMesh::GetPosition() const
+glm::vec3 GMesh::GetPosition() const
 {
 	glm::mat4 Modelcopy = *ModelMatrix;
 	glm::vec3 scale;
@@ -109,97 +98,6 @@ const glm::vec3& GMesh::GetPosition() const
 	glm::vec4 perspective;
 	glm::decompose(Modelcopy, scale, rotation, translation, skew, perspective);
 	return translation;
-}
-
-void GMesh::AddColour(const glm::vec4& ColourVector)
-{
-	AddColour(&ColourVector[0]);
-}
-
-void GMesh::AddVertex(const float Vertex[3])
-{
-	ASSERT(bIsEditable);
-
-	const std::array<const float, 3> VertexArray = {
-		Vertex[0],
-		Vertex[1],
-		Vertex[2]
-	};
-
-	Vertices.push_back(VertexArray);
-}
-
-void GMesh::AddVertex(const float Vertex[3], const float Colour[4])
-{
-	ASSERT(bIsEditable);
-
-	const std::array<const float, 3> VertexArray = {
-		Vertex[0],
-		Vertex[1],
-		Vertex[2]
-	};
-
-	const std::array<const float, 4> ColourArray = {
-		Colour[0],
-		Colour[1],
-		Colour[2],
-		Colour[3]
-	};
-
-	Vertices.push_back(VertexArray);
-	Colours.push_back(ColourArray);
-}
-
-void GMesh::AddColour(const float Colour[4])
-{
-	ASSERT(bIsEditable);
-
-	const std::array<const float, 4> ColourArray = {
-		Colour[0],
-		Colour[1],
-		Colour[2],
-		Colour[4]
-	};
-
-	Colours.push_back(ColourArray);
-}
-
-void GMesh::AddNormal(const float Normal[3])
-{
-	ASSERT(bIsEditable);
-
-	const std::array<const float, 3> NormalArray = {
-		Normal[0],
-		Normal[1],
-		Normal[2]
-	};
-
-	Normals.push_back(NormalArray);
-}
-
-void GMesh::AddTangent(const float Tangent[3])
-{
-	ASSERT(bIsEditable);
-
-	const std::array<const float, 3> TangentArray = {
-		Tangent[0],
-		Tangent[1],
-		Tangent[2]
-	};
-
-	Tangents.push_back(TangentArray);
-}
-
-void GMesh::AddTexCoord(const float TexCoord[2])
-{
-	ASSERT(bIsEditable);
-
-	const std::array<const float, 2> TexCoordArray = {
-		TexCoord[0],
-		TexCoord[1]
-	};
-
-	TexCoords.push_back(TexCoordArray);
 }
 
 void GMesh::SetTexture(const std::string& TexturePath)
@@ -294,10 +192,8 @@ void GMesh::BindBuffer(void* Array, const unsigned int ArraySize, GraphicsMesh& 
 	glBufferData(BufferType, ArraySize, Array, GL_STATIC_DRAW);
 }
 
-void GMesh::BindBuffers(const bool& bCanEdit)
+void GMesh::BindBuffers()
 {
-	ASSERT(bIsEditable);
-
 	GenerateVertexArray();
 	BindVertexArray();
 

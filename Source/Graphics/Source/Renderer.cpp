@@ -1,7 +1,7 @@
 #include "Graphics/Renderer.h"
 #include "Graphics/Camera.h"
 #include "Graphics/Mesh/MaterialExamples.h"
-#include "Graphics/Mesh/Mesh.h"
+#include "Graphics/Mesh/EditableMesh.h"
 #include "Graphics/Mesh/CubeMesh.h"
 #include "Graphics/Mesh/PlaneMesh.h"
 #include "Graphics/Shader.h"
@@ -107,7 +107,7 @@ void GRenderer::Init()
 
 	CubeMesh->SetMaterial(MaterialExamples::Gold);
 
-    CubeMesh->BindBuffers();
+    CubeMesh->BindEditableBuffers();
 
     std::unique_ptr<GCubeMesh> LightCubeMesh = std::make_unique<GCubeMesh>(0.3f, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
@@ -115,7 +115,7 @@ void GRenderer::Init()
 
     LightCubeMesh->SetShader(Shaders[0]);
 
-    LightCubeMesh->BindBuffers();
+    LightCubeMesh->BindEditableBuffers();
 
     Meshes.push_back(std::move(CubeMesh));
     Meshes.push_back(std::move(LightCubeMesh));

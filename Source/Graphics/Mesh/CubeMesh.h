@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Graphics/Mesh/Mesh.h"
+#include "Graphics/Mesh/EditableMesh.h"
 
 #include <glm/fwd.hpp>
 
@@ -8,7 +8,7 @@
 
 class GTexture;
 
-class GCubeMesh : public GMesh
+class GCubeMesh final : public GEditableMesh
 {
 public:
 	//TODO: Texture the cube with a normal texture or a cube map
