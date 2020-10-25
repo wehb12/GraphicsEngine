@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Graphics/Mesh/Mesh.h"
+#include "Graphics/Mesh/EditableMesh.h"
 
 #include <glm/fwd.hpp>
 
@@ -8,7 +8,7 @@
 
 class GTexture;
 
-class GPlaneMesh : public GMesh
+class GPlaneMesh final : public GEditableMesh
 {
 public:
 	// TODO: Construct using Normal vector
