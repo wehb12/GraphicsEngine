@@ -1,13 +1,18 @@
 #pragma once
 
+#include "Common/Vector.h"
+#include "Graphics/Texture.h"
+
 #include <glm/glm.hpp>
 
 #include <array>
 #include <vector>
 
 class GShader;
-class GTexture;
 struct GraphicsMesh;
+struct GVector2;
+struct GVector3;
+struct GVector4;
 
 class GMesh
 {
@@ -34,6 +39,8 @@ public:
 
 public:
 	GMesh(const std::string& MeshName = "");
+
+	GMesh(std::vector<GVector3> InVertices, std::vector<GVector3> InNormals, std::vector<GVector2> InTexCoords, std::vector<unsigned int> InIndices, std::vector<std::shared_ptr<GTexture>> InTextures);
 
 	~GMesh();
 
@@ -111,12 +118,12 @@ protected:
 	void BufferMaterialToShader();
 
 protected:
-	std::vector<std::array<const float, 3>> Vertices;
-	std::vector<std::array<const float, 4>> Colours;
-	std::vector<std::array<const float, 2>> TexCoords;
+	std::vector<GVector3> Vertices;
+	std::vector<GVector4> Colours;
+	std::vector<GVector2> TexCoords;
 	std::vector<unsigned int> Indices;
-	std::vector<std::array<const float, 3>> Normals;
-	std::vector<std::array<const float, 3>> Tangents;
+	std::vector<GVector3> Normals;
+	std::vector<GVector3> Tangents;
 
 	std::unique_ptr<GraphicsMesh> VertexArrayObject;
 	std::unique_ptr<GraphicsMesh> VertexBufferObjects[EVertexBuffer::MAX];

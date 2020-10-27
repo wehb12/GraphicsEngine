@@ -6,8 +6,6 @@
 
 #include <memory>
 
-class GTexture;
-
 class GCubeMesh final : public GEditableMesh
 {
 public:

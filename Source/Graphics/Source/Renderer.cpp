@@ -3,6 +3,7 @@
 #include "Graphics/Mesh/MaterialExamples.h"
 #include "Graphics/Mesh/EditableMesh.h"
 #include "Graphics/Mesh/CubeMesh.h"
+#include "Graphics/Mesh/Model.h"
 #include "Graphics/Mesh/PlaneMesh.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
@@ -119,6 +120,8 @@ void GRenderer::Init()
 
     Meshes.push_back(std::move(CubeMesh));
     Meshes.push_back(std::move(LightCubeMesh));
+
+	//Model = std::make_shared<GModel>("E:/WillEngine/Content/Models/Alocasia/28-01alocasia_fbx/01Alocasia_fbx.FBX");
 }
 
 void GRenderer::Tick(const float& DeltaTime)
@@ -213,6 +216,8 @@ void GRenderer::RenderScene()
     {
 		Mesh->Draw();
     }
+
+	//Model->Draw();
 }
 
 void GRenderer::Terminate()
