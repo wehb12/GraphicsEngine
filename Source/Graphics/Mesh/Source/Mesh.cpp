@@ -1,7 +1,7 @@
 #include "Graphics/Mesh/Mesh.h"
 #include "Common/DebugMacros.h"
+#include "Common/StringOperations.h"
 #include "Graphics/Shader.h"
-#include "Graphics/Texture.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -31,13 +31,38 @@ struct GraphicsMesh
 GMesh::GMesh(const std::string& MeshName)
 {
 	ModelMatrix = std::shared_ptr<glm::mat4>(new glm::mat4(1.0f));
+}
 
-	if (MeshName.size() != 0)
-	{
-		// Load mesh from file
+GMesh::GMesh(std::vector<GVector3> InVertices, std::vector<GVector3> InNormals, std::vector<GVector2> InTexCoords, std::vector<unsigned int> InIndices, std::vector<std::shared_ptr<GTexture>> InTextures)
+	: Vertices(InVertices)
+	, Normals(InNormals)
+	, TexCoords(InTexCoords)
+	, Indices(InIndices)
+	, Texture(InTextures.size() ? InTextures[0] : nullptr)
+{
+	Shader = std::shared_ptr<GShader>(new GShader(
+		{
+			SHADER_PATH("Simple/VertexShader.glsl"),
+			SHADER_PATH("Simple/FragmentShader.glsl")
+		}));
 
-		BindBuffers();
-	}
+	const glm::vec3 LightPosition = glm::vec3(1.5f, 1.0f, -4.5f);
+	const float LightAmbient[3] = { 0.2f, 0.2f, 0.2f };
+	const float LightDiffuse[3] = { 0.5f, 0.5f, 0.5f };
+	const float LightSpecular[3] = { 1.0f, 1.0f, 1.0f };
+
+	Shader->BufferFloatUniformVector3("Light.Ambient", LightAmbient);
+	Shader->BufferFloatUniformVector3("Light.Diffuse", LightDiffuse);
+	Shader->BufferFloatUniformVector3("Light.Specular", LightSpecular);
+	Shader->BufferFloatUniformVector3("Light.Position", &LightPosition[0]);
+
+	Shader->UseProgram();
+
+	ModelMatrix = std::shared_ptr<glm::mat4>(new glm::mat4(1.0f));
+
+	*ModelMatrix = glm::scale(*ModelMatrix, glm::vec3(100.0f));
+
+	BindBuffers();
 }
 
 GMesh::~GMesh()

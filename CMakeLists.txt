@@ -73,7 +73,7 @@ MESSAGE(STATUS "Found Assimp in ${ASSIMP_INCLUDE_DIR}")
 # GLAD
 ADD_LIBRARY(GLAD "Source/ThirdParty/Graphics/glad/src/glad.c")
 
-SET(LIBS glfw3 opengl32 GLAD)
+SET(LIBS glfw3 opengl32 GLAD ${ASSIMP_LIBRARY})
 
 INCLUDE_DIRECTORIES(
     "${CMAKE_SOURCE_DIR}/Source/ThirdParty/Graphics/glad/include"
@@ -84,3 +84,5 @@ INCLUDE_DIRECTORIES(
 )
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${LIBS})
+
+add_custom_command(TARGET WillEngine POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/Source/ThirdParty/Graphics/assimp-5.0.1/build/code/Debug/assimp-vc141-mtd.dll" "E:/WillEngine/Build/Debug" )

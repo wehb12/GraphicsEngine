@@ -46,6 +46,6 @@ private:
 	void GetTexturePaths(const std::string& TexturePath);
 
 private:
-	std::array<std::unique_ptr<GraphicsTexture>, ETexture::MAX> Textures;
+	std::array<std::shared_ptr<GraphicsTexture>, ETexture::MAX> Textures;
 	std::array<std::string, ETexture::MAX> TexturePaths;
 };

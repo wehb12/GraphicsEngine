@@ -6,6 +6,7 @@
 
 class GCamera;
 class GMesh;
+class GModel;
 class GShader;
 class GWindow;
 
@@ -48,4 +49,6 @@ private:
 	std::vector<std::unique_ptr<GMesh>> Meshes;
 
 	std::shared_ptr<const GCamera> CameraPtr;
+
+	std::shared_ptr<GModel> Model;
 };

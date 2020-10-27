@@ -54,13 +54,13 @@ void GTexture::GenerateTextures()
 		GLuint Texture;
 		glGenTextures(1, &Texture);
 
-		Textures[TextureType] = std::make_unique<GraphicsTexture>(Texture, GL_TEXTURE0 + TextureType);
+		Textures[TextureType] = std::make_shared<GraphicsTexture>(Texture, GL_TEXTURE0 + TextureType);
 	}
 }
 
 void GTexture::BindTextures()
 {
-	for (std::unique_ptr<GraphicsTexture>& Texture : Textures)
+	for (std::shared_ptr<GraphicsTexture>& Texture : Textures)
 	{
 		glActiveTexture(Texture->GLTextureUnit);
 		glBindTexture(GL_TEXTURE_2D, Texture->GLTexture);
