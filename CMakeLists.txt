@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
 PROJECT(WillEngine VERSION 0.0)
 
 # Game source files
@@ -84,5 +84,12 @@ INCLUDE_DIRECTORIES(
 )
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${LIBS})
+
+SET_TARGET_PROPERTIES(WillEngine
+    PROPERTIES
+        CXX_STANDARD 20
+        CXX_STANDARD_REQUIRED YES
+        CXX_EXTENSIONS NO
+)
 
 add_custom_command(TARGET WillEngine POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/Source/ThirdParty/Graphics/assimp-5.0.1/build/code/Debug/assimp-vc141-mtd.dll" "E:/WillEngine/Build/Debug" )

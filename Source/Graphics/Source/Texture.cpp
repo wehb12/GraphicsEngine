@@ -29,6 +29,7 @@ struct GraphicsTexture
 
 GTexture::GTexture(const std::string& TexturePath)
 {
+	stbi_set_flip_vertically_on_load(1);
 	GetTexturePaths(TexturePath);
 	GenerateTextures();
 	BindTextures();

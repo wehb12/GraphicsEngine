@@ -60,6 +60,13 @@ void GRenderer::Init()
         }
     ));
 
+	std::shared_ptr<GShader> ModelShader = std::shared_ptr<GShader>(new GShader(
+		{
+			SHADER_PATH("Model/VertexShader.glsl"),
+			SHADER_PATH("Model/FragmentShader.glsl")
+		}
+	));
+
 	IInputManager::Get()->BindDelegate(EInputKey::F1, [this]()
 		{
 			const glm::vec3 LightPosition = glm::vec3(1.5f, 1.0f, -4.5f);
@@ -83,6 +90,7 @@ void GRenderer::Init()
 	Shaders.push_back(std::move(LightSourceShader));
 	Shaders.push_back(std::move(SimpleShader));
     Shaders.push_back(std::move(TexturedShader));
+    Shaders.push_back(std::move(ModelShader));
 
 	const glm::vec3 LightPosition = glm::vec3(1.5f, 1.0f, -4.5f);
 	const float LightAmbient[3] = { 0.2f, 0.2f, 0.2f };
@@ -101,7 +109,7 @@ void GRenderer::Init()
 	Shaders[2]->UseProgram();
 	std::unique_ptr<GCubeMesh> CubeMesh = std::make_unique<GCubeMesh>(2.0f, glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
 
-    CubeMesh->SetShader(CubeMesh->HasTexCoords() ? Shaders[2] : Shaders[1]);
+    CubeMesh->SetShader(Shaders[2]);
 	CubeMesh->SetTexture(TEXTURE_PATH("WoodGate/WoodGate"));
 
 	CubeMesh->SetTranslation({0.0f, -1.0f, -3.0f});
@@ -121,7 +129,7 @@ void GRenderer::Init()
     Meshes.push_back(std::move(CubeMesh));
     Meshes.push_back(std::move(LightCubeMesh));
 
-	//Model = std::make_shared<GModel>("E:/WillEngine/Content/Models/Alocasia/28-01alocasia_fbx/01Alocasia_fbx.FBX");
+	Model = std::make_shared<GModel>(MODEL_PATH("SurvivalBackpack/backpack.obj"), Shaders[3]);
 }
 
 void GRenderer::Tick(const float& DeltaTime)
@@ -217,7 +225,7 @@ void GRenderer::RenderScene()
 		Mesh->Draw();
     }
 
-	//Model->Draw();
+	Model->Draw();
 }
 
 void GRenderer::Terminate()

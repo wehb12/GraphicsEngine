@@ -33,34 +33,17 @@ GMesh::GMesh(const std::string& MeshName)
 	ModelMatrix = std::shared_ptr<glm::mat4>(new glm::mat4(1.0f));
 }
 
-GMesh::GMesh(std::vector<GVector3> InVertices, std::vector<GVector3> InNormals, std::vector<GVector2> InTexCoords, std::vector<unsigned int> InIndices, std::vector<std::shared_ptr<GTexture>> InTextures)
+GMesh::GMesh(std::vector<glm::vec3> InVertices, std::vector<glm::vec3> InNormals, std::vector<glm::vec2> InTexCoords, std::vector<unsigned int> InIndices, std::vector<std::shared_ptr<GTexture>> InTextures, std::vector<glm::vec3> InTangents/* = std::vector<glm::vec3>()*/)
 	: Vertices(InVertices)
 	, Normals(InNormals)
 	, TexCoords(InTexCoords)
 	, Indices(InIndices)
 	, Texture(InTextures.size() ? InTextures[0] : nullptr)
+	, Tangents(InTangents)
 {
-	Shader = std::shared_ptr<GShader>(new GShader(
-		{
-			SHADER_PATH("Simple/VertexShader.glsl"),
-			SHADER_PATH("Simple/FragmentShader.glsl")
-		}));
-
-	const glm::vec3 LightPosition = glm::vec3(1.5f, 1.0f, -4.5f);
-	const float LightAmbient[3] = { 0.2f, 0.2f, 0.2f };
-	const float LightDiffuse[3] = { 0.5f, 0.5f, 0.5f };
-	const float LightSpecular[3] = { 1.0f, 1.0f, 1.0f };
-
-	Shader->BufferFloatUniformVector3("Light.Ambient", LightAmbient);
-	Shader->BufferFloatUniformVector3("Light.Diffuse", LightDiffuse);
-	Shader->BufferFloatUniformVector3("Light.Specular", LightSpecular);
-	Shader->BufferFloatUniformVector3("Light.Position", &LightPosition[0]);
-
-	Shader->UseProgram();
-
 	ModelMatrix = std::shared_ptr<glm::mat4>(new glm::mat4(1.0f));
 
-	*ModelMatrix = glm::scale(*ModelMatrix, glm::vec3(100.0f));
+	*ModelMatrix = glm::scale(*ModelMatrix, glm::vec3(0.1f));
 
 	BindBuffers();
 }
@@ -224,36 +207,39 @@ void GMesh::BindBuffers()
 
 	GenerateBuffers();
 
-	BindBuffer(const_cast<float*>(&Vertices[0][0]), Vertices.size() * Vertices[0].size() * sizeof(float), *VertexBufferObjects[EVertexBuffer::VERTEX_BUFFER], GL_ARRAY_BUFFER);
-	SetVertexAttributePointer(EVertexBuffer::VERTEX_BUFFER, Vertices[0].size());
+	constexpr int VertexSize = 3;
+	BindBuffer(const_cast<float*>(&Vertices[0][0]), Vertices.size() * VertexSize * sizeof(float), *VertexBufferObjects[EVertexBuffer::VERTEX_BUFFER], GL_ARRAY_BUFFER);
+	SetVertexAttributePointer(EVertexBuffer::VERTEX_BUFFER, VertexSize);
 
 	if (Colours.size() != 0)
 	{
-		BindBuffer(const_cast<float*>(&Colours[0][0]), Colours.size() * Colours[0].size() * sizeof(float), *VertexBufferObjects[EVertexBuffer::COLOUR_BUFFER], GL_ARRAY_BUFFER);
-		SetVertexAttributePointer(EVertexBuffer::COLOUR_BUFFER, Colours[0].size());
+		constexpr int ColourSize = 4;
+		BindBuffer(&Colours[0][0], Colours.size() * ColourSize * sizeof(float), *VertexBufferObjects[EVertexBuffer::COLOUR_BUFFER], GL_ARRAY_BUFFER);
+		SetVertexAttributePointer(EVertexBuffer::COLOUR_BUFFER, ColourSize);
 	}
 
 	if (TexCoords.size() != 0)
 	{
-		BindBuffer(const_cast<float*>(&TexCoords[0][0]), TexCoords.size() * TexCoords[0].size() * sizeof(float), *VertexBufferObjects[EVertexBuffer::TEXCOORD_BUFFER], GL_ARRAY_BUFFER);
-		SetVertexAttributePointer(EVertexBuffer::TEXCOORD_BUFFER, TexCoords[0].size());
+		constexpr int TexCoordSize = 2;
+		BindBuffer(&TexCoords[0][0], TexCoords.size() * TexCoordSize * sizeof(float), *VertexBufferObjects[EVertexBuffer::TEXCOORD_BUFFER], GL_ARRAY_BUFFER);
+		SetVertexAttributePointer(EVertexBuffer::TEXCOORD_BUFFER, TexCoordSize);
 	}
 
 	if (Indices.size() != 0)
 	{
-		BindBuffer(const_cast<unsigned int*>(&Indices[0]), Indices.size() * sizeof(unsigned int), *VertexBufferObjects[EVertexBuffer::ELEMENT_BUFFER], GL_ELEMENT_ARRAY_BUFFER);
+		BindBuffer(&Indices[0], Indices.size() * sizeof(unsigned int), *VertexBufferObjects[EVertexBuffer::ELEMENT_BUFFER], GL_ELEMENT_ARRAY_BUFFER);
 	}
 
 	if (Normals.size() != 0)
 	{
-		BindBuffer(const_cast<float*>(&Normals[0][0]), Normals.size() * Normals[0].size() * sizeof(float), *VertexBufferObjects[EVertexBuffer::NORMAL_BUFFER], GL_ARRAY_BUFFER);
-		SetVertexAttributePointer(EVertexBuffer::NORMAL_BUFFER, Normals[0].size());
+		BindBuffer(&Normals[0][0], Normals.size() * VertexSize * sizeof(float), *VertexBufferObjects[EVertexBuffer::NORMAL_BUFFER], GL_ARRAY_BUFFER);
+		SetVertexAttributePointer(EVertexBuffer::NORMAL_BUFFER, VertexSize);
 	}
 
 	if (Tangents.size() != 0)
 	{
-		BindBuffer(const_cast<float*>(&Tangents[0][0]), Tangents.size() * Tangents[0].size() * sizeof(float), *VertexBufferObjects[EVertexBuffer::TANGENT_BUFFER], GL_ARRAY_BUFFER);
-		SetVertexAttributePointer(EVertexBuffer::TANGENT_BUFFER, Tangents[0].size());
+		BindBuffer(const_cast<float*>(&Tangents[0][0]), Tangents.size() * VertexSize * sizeof(float), *VertexBufferObjects[EVertexBuffer::TANGENT_BUFFER], GL_ARRAY_BUFFER);
+		SetVertexAttributePointer(EVertexBuffer::TANGENT_BUFFER, VertexSize);
 	}
 }
 

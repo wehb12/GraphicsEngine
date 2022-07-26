@@ -32,7 +32,7 @@ public:
 	void CloseWindow();
 
 private:
-	GWindow(const std::string& InName, const int InWindowWidth = 800, const int InWindowHeight = 600);
+	GWindow(const std::string& InName, const int InWindowWidth = 1600, const int InWindowHeight = 1200);
 
 	static std::shared_ptr<GWindow> WindowSingleton;
 
