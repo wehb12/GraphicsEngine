@@ -6,6 +6,7 @@
 #define SHADER_PATH(PATH) SHADER_DIR PATH
 #define CONTENT_PATH(PATH) CONTENT_DIR PATH
 #define TEXTURE_PATH(PATH) CONTENT_DIR "Textures/" PATH
+#define MODEL_PATH(PATH) CONTENT_DIR "Models/" PATH
 
 // String Compare
 enum class EStringCase

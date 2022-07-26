@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Common/Vector.h"
 #include "Graphics/Texture.h"
 
 #include <glm/glm.hpp>
@@ -10,9 +9,6 @@
 
 class GShader;
 struct GraphicsMesh;
-struct GVector2;
-struct GVector3;
-struct GVector4;
 
 class GMesh
 {
@@ -40,7 +36,7 @@ public:
 public:
 	GMesh(const std::string& MeshName = "");
 
-	GMesh(std::vector<GVector3> InVertices, std::vector<GVector3> InNormals, std::vector<GVector2> InTexCoords, std::vector<unsigned int> InIndices, std::vector<std::shared_ptr<GTexture>> InTextures);
+	GMesh(std::vector<glm::vec3> InVertices, std::vector<glm::vec3> InNormals, std::vector<glm::vec2> InTexCoords, std::vector<unsigned int> InIndices, std::vector<std::shared_ptr<GTexture>> InTextures, std::vector<glm::vec3> InTangents = std::vector<glm::vec3>());
 
 	~GMesh();
 
@@ -118,12 +114,12 @@ protected:
 	void BufferMaterialToShader();
 
 protected:
-	std::vector<GVector3> Vertices;
-	std::vector<GVector4> Colours;
-	std::vector<GVector2> TexCoords;
+	std::vector<glm::vec3> Vertices;
+	std::vector<glm::vec4> Colours;
+	std::vector<glm::vec2> TexCoords;
 	std::vector<unsigned int> Indices;
-	std::vector<GVector3> Normals;
-	std::vector<GVector3> Tangents;
+	std::vector<glm::vec3> Normals;
+	std::vector<glm::vec3> Tangents;
 
 	std::unique_ptr<GraphicsMesh> VertexArrayObject;
 	std::unique_ptr<GraphicsMesh> VertexBufferObjects[EVertexBuffer::MAX];

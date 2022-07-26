@@ -1,6 +1,5 @@
 #include "Graphics/Mesh/Model.h"
 #include "Common/DebugMacros.h"
-#include "Common/Vector.h"
 #include "Graphics/Mesh/Mesh.h"
 #include "Graphics/Texture.h"
 
@@ -8,7 +7,9 @@
 #include <assimp/mesh.h>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
+#include <glm/glm.hpp>
 
+#include <filesystem>
 #include <iostream>
 
 struct ModelLoaderNode
@@ -26,7 +27,7 @@ struct ModelLoaderMesh
 void GModel::LoadModel(const std::string& ModelPath)
 {
 	Assimp::Importer Importer;
-	const aiScene* Scene = Importer.ReadFile(ModelPath.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals);
+	const aiScene* Scene = Importer.ReadFile(ModelPath.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
 
 	if (!Scene || Scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !Scene->mRootNode)
 	{
@@ -53,6 +54,7 @@ void GModel::ProcessNode(ModelLoaderNode Node)
 	{
 		aiMesh* Mesh = Node.Scene->mMeshes[Node.Node->mMeshes[i]];
 		Meshes.push_back(ProcessMesh({ Mesh, Node.Scene }));
+		Meshes.back()->SetShader(Shader);
 	}
 
 	for (unsigned int i = 0; i < Node.Node->mNumChildren; i++)
@@ -61,50 +63,68 @@ void GModel::ProcessNode(ModelLoaderNode Node)
 	}
 }
 
-std::vector<std::shared_ptr<GTexture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
+std::vector<std::shared_ptr<GTexture>> GModel::LoadMaterialTextures(aiMaterial* Material, aiTextureType TextureType)
 {
-	std::vector<std::shared_ptr<GTexture>> textures;
-	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+	std::vector<std::shared_ptr<GTexture>> Textures;
+	for (unsigned int TextureIndex = 0; TextureIndex < Material->GetTextureCount(TextureType); TextureIndex++)
 	{
-		aiString str;
-		mat->GetTexture(type, i, &str);
-		std::shared_ptr<GTexture> texture = std::make_shared<GTexture>(str.C_Str());
-		//texture.id = TextureFromFile(str.C_Str(), directory);
-		//texture.type = typeName;
-		//texture.path = str;
-		textures.push_back(texture);
+		aiString TexturePath;
+		Material->GetTexture(TextureType, 0, &TexturePath);
+		std::filesystem::path BaseDir = ModelDirectory.c_str();
+		std::filesystem::path FullPath = BaseDir / TexturePath.C_Str();
+		std::string FullPathString = FullPath.string();
+		if (!LoadedTextures.contains(FullPathString))
+		{
+			std::shared_ptr<GTexture> Texture = std::make_shared<GTexture>(FullPathString);
+			LoadedTextures.emplace(std::make_pair(FullPathString, true));
+			Textures.push_back(Texture);
+		}
 	}
-	return textures;
+	return Textures;
 }
 
 std::shared_ptr<GMesh> GModel::ProcessMesh(ModelLoaderMesh Mesh)
 {
-	std::vector<GVector3> Vertices;
-	std::vector<GVector3> Normals;
-	std::vector<GVector2> TexCoords;
+	std::vector<glm::vec3> Vertices;
+	std::vector<glm::vec3> Normals;
+	std::vector<glm::vec3> Tangents;
+	std::vector<glm::vec3> Bitangents;
+	std::vector<glm::vec2> TexCoords;
 	std::vector<unsigned int> Indices;
 	std::vector<std::shared_ptr<GTexture>> Textures;
 
 	for (unsigned int i = 0; i < Mesh.Mesh->mNumVertices; i++)
 	{
-		GVector3 Vertex;
-		Vertex.X = Mesh.Mesh->mVertices[i].x;
-		Vertex.Y = Mesh.Mesh->mVertices[i].y;
-		Vertex.Z = Mesh.Mesh->mVertices[i].z;
+		glm::vec3 Vertex;
+		Vertex.x = Mesh.Mesh->mVertices[i].x;
+		Vertex.y = Mesh.Mesh->mVertices[i].y;
+		Vertex.z = Mesh.Mesh->mVertices[i].z;
 		Vertices.push_back(Vertex);
 
-		GVector3 Normal;
-		Normal.X = Mesh.Mesh->mNormals[i].x;
-		Normal.Y = Mesh.Mesh->mNormals[i].y;
-		Normal.Z = Mesh.Mesh->mNormals[i].z;
+		glm::vec3 Normal;
+		Normal.x = Mesh.Mesh->mNormals[i].x;
+		Normal.y = Mesh.Mesh->mNormals[i].y;
+		Normal.z = Mesh.Mesh->mNormals[i].z;
 		Normals.push_back(Normal);
 
 		if (Mesh.Mesh->mTextureCoords[0])
 		{
-			GVector2 TexCoord;
-			TexCoord.X = Mesh.Mesh->mTextureCoords[0][i].x;
-			TexCoord.Y = Mesh.Mesh->mTextureCoords[0][i].y;
+			glm::vec2 TexCoord;
+			TexCoord.x = Mesh.Mesh->mTextureCoords[0][i].x;
+			TexCoord.y = Mesh.Mesh->mTextureCoords[0][i].y;
 			TexCoords.push_back(TexCoord);
+
+			glm::vec3 Tangent;
+			Tangent.x = Mesh.Mesh->mTangents[i].x;
+			Tangent.y = Mesh.Mesh->mTangents[i].y;
+			Tangent.z = Mesh.Mesh->mTangents[i].z;
+			Tangents.push_back(Tangent);
+
+			glm::vec3 Bitangent;
+			Bitangent.x = Mesh.Mesh->mBitangents[i].x;
+			Bitangent.y = Mesh.Mesh->mBitangents[i].y;
+			Bitangent.z = Mesh.Mesh->mBitangents[i].z;
+			Bitangents.push_back(Bitangent);
 		}
 	}
 
@@ -121,12 +141,12 @@ std::shared_ptr<GMesh> GModel::ProcessMesh(ModelLoaderMesh Mesh)
 	{
 		aiMaterial* Material = Mesh.Scene->mMaterials[Mesh.Mesh->mMaterialIndex];
 
-		std::vector<std::shared_ptr<GTexture>> DiffuseMaps = loadMaterialTextures(Material, aiTextureType_DIFFUSE, "texture_diffuse");
+		std::vector<std::shared_ptr<GTexture>> DiffuseMaps = LoadMaterialTextures(Material, aiTextureType_DIFFUSE);
 		Textures.insert(Textures.end(), DiffuseMaps.begin(), DiffuseMaps.end());
 
-		std::vector<std::shared_ptr<GTexture>> SpecularMaps = loadMaterialTextures(Material, aiTextureType_SPECULAR, "texture_specular");
+		std::vector<std::shared_ptr<GTexture>> SpecularMaps = LoadMaterialTextures(Material, aiTextureType_SPECULAR);
 		Textures.insert(Textures.end(), SpecularMaps.begin(), SpecularMaps.end());
 	}
 
-	return std::make_shared<GMesh>(Vertices, Normals, TexCoords, Indices, Textures);
+	return std::make_shared<GMesh>(Vertices, Normals, TexCoords, Indices, Textures, Tangents);
 }

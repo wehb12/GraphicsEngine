@@ -1,5 +1,6 @@
 #include "Graphics/Mesh/EditableMesh.h"
-#include "Common/Vector.h"
+
+#include <glm/glm.hpp>
 
 void GEditableMesh::AddColour(const glm::vec4& ColourVector)
 {
@@ -8,7 +9,7 @@ void GEditableMesh::AddColour(const glm::vec4& ColourVector)
 
 void GEditableMesh::AddVertex(const float Vertex[3])
 {
-	const GVector3 VertexArray = {
+	const glm::vec3 VertexArray = {
 		Vertex[0],
 		Vertex[1],
 		Vertex[2]
@@ -19,13 +20,13 @@ void GEditableMesh::AddVertex(const float Vertex[3])
 
 void GEditableMesh::AddVertex(const float Vertex[3], const float Colour[4])
 {
-	const GVector3 VertexArray = {
+	const glm::vec3 VertexArray = {
 		Vertex[0],
 		Vertex[1],
 		Vertex[2]
 	};
 
-	const GVector4 ColourArray = {
+	const glm::vec4 ColourArray = {
 		Colour[0],
 		Colour[1],
 		Colour[2],
@@ -38,7 +39,7 @@ void GEditableMesh::AddVertex(const float Vertex[3], const float Colour[4])
 
 void GEditableMesh::AddColour(const float Colour[4])
 {
-	const GVector4 ColourArray = {
+	const glm::vec4 ColourArray = {
 		Colour[0],
 		Colour[1],
 		Colour[2],
@@ -50,7 +51,7 @@ void GEditableMesh::AddColour(const float Colour[4])
 
 void GEditableMesh::AddNormal(const float Normal[3])
 {
-	const GVector3 NormalArray = {
+	const glm::vec3 NormalArray = {
 		Normal[0],
 		Normal[1],
 		Normal[2]
@@ -61,7 +62,7 @@ void GEditableMesh::AddNormal(const float Normal[3])
 
 void GEditableMesh::AddTangent(const float Tangent[3])
 {
-	const GVector3 TangentArray = {
+	const glm::vec3 TangentArray = {
 		Tangent[0],
 		Tangent[1],
 		Tangent[2]
@@ -72,7 +73,7 @@ void GEditableMesh::AddTangent(const float Tangent[3])
 
 void GEditableMesh::AddTexCoord(const float TexCoord[2])
 {
-	const GVector2 TexCoordArray = {
+	const glm::vec2 TexCoordArray = {
 		TexCoord[0],
 		TexCoord[1]
 	};

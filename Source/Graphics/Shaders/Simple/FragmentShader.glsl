@@ -43,6 +43,4 @@ void main()
     vec3 Specular = SpecularPower * Light.Specular * Material.Specular;
 
     FragmentColour = vec4((Ambient + Diffuse + Specular), 1.0);
-
-    FragmentColour = vec4(1.0, 0.0, 0.0, 1.0);
 }
